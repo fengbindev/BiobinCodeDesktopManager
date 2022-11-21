@@ -1,0 +1,69 @@
+{
+  "name": "biobin-code-desktop-manager",
+  "version": "1.5.8",
+  "description": "BioBin Code generator,, compatible with Linux, windows, mac",
+  "author": "bin.feng",
+  "private": true,
+  "main": "electron-main.js",
+  "dependencies": {
+    "electron-updater": "4.6.5",
+    "font-list": "^1.4.5"
+  },
+  "repository": "github:qishibo/AnotherRedisDesktopManager",
+  "build": {
+    "appId": "me.qii404.another-redis-desktop-manager",
+    "productName": "百奥云代码生成器",
+    "artifactName": "${productName}.${version}.${ext}",
+    "copyright": "Copyright © 2022 qii404.me",
+    "asar": true,
+    "directories": {
+      "output": "build-apps",
+      "buildResources": "./"
+    },
+    "electronVersion": "12.2.3",
+    "files": [
+      "!static/js/*.map",
+      "!static/css/*.map",
+      "!*.map"
+    ],
+    "publish": [{
+      "provider": "github",
+      "owner": "qishibo",
+      "repo": "AnotherRedisDesktopManager",
+      "releaseType": "prerelease"
+    }],
+    "win": {
+      "icon": "icons/icon.ico",
+      "target": [
+        "nsis"
+      ]
+    },
+    "nsis": {
+      "allowToChangeInstallationDirectory": true,
+      "oneClick": false,
+      "menuCategory": true,
+      "allowElevation": false
+    },
+    "linux": {
+      "icon": "icons/icon.png",
+      "category": "Utility",
+      "target": [
+        "AppImage"
+      ]
+    },
+    "snap": {
+      "plugs": ["default", "ssh-keys"]
+    },
+    "mac": {
+      "icon": "icons/icon.icns",
+      "type": "development",
+      "category": "public.app-category.developer-tools",
+      "target": [
+        "dmg"
+      ],
+      "extendInfo": {
+        "ElectronTeamID": "68JN8DV835"
+      }
+    }
+  }
+}
