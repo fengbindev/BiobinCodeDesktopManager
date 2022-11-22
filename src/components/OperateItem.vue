@@ -225,7 +225,6 @@ export default {
           });
           return;
         }
-        console.log('refreshDatabaseList', _this.newKeyName)
         _this.$bus.$emit('refreshDatabaseList', _this.client, _this.newKeyName, 'add');
         _this.newKeyDialog = false;
       });

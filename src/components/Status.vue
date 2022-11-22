@@ -237,7 +237,6 @@ export default {
               results.map(val=> {
                this.connectionStatus[val.Variable_name] = val.Value
               })
-              console.log(this.dbAllStatus)
             }
         });
 

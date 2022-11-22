@@ -3,8 +3,8 @@
         <el-aside class="mainAside" width="200px">
             <div v-loading="loadingTableList">
             <!-- 表列表 -->
-            <el-table :data="tables" highlight-current-row style="width: 100%">
-                <el-table-column :show-overflow-tooltip='true' prop="TABLE_NAME" label="表名" width="180">
+            <el-table :data="tables" highlight-current-row style="width: 100%" @row-click="handleRowClickT">
+                <el-table-column :show-overflow-tooltip='true' prop="TABLE_NAME_COMMENT" label="表名" width="180">
                     <template slot="header">   
                         <span>表名</span>
                     </template>
@@ -12,21 +12,27 @@
             </el-table>
             </div>
         </el-aside>
+        <el-main style="padding: 0px 10px">
+            <GenConfig :tableName="tableName" :client="client" :database="database" />
+        </el-main>
     </el-container>
 
 </template>
 
 <script type="text/javascript">
 import db from '@/db.js';
+import GenConfig from '@/components/GenConfig.vue';
 export default {
     props: ['client', 'database'],
+    components: {GenConfig},
     data() {
         return {
             loadingTableList: false,
+            tableName: "",
             tables:[]
         }
     },
-    created() {
+    async created() {
        this.loadingTableList = true;
        let { host, port, username, auth } = this.client
        let connection = db.createConnection(host, port, username, auth, this.database)
@@ -49,13 +55,22 @@ export default {
             if (error) throw error;
             results.map(item => {
                 if(item.TABLE_COMMENT) {
-                    item.TABLE_NAME = item.TABLE_NAME + '(' + item.TABLE_COMMENT + ')';
+                    item.TABLE_NAME_COMMENT = item.TABLE_NAME + '(' + item.TABLE_COMMENT + ')';
+                } else {
+                    item.TABLE_NAME_COMMENT = item.TABLE_NAME;
                 }
             });
             this.tables = results
         });
         connection.end();
         this.loadingTableList = false;
+    },
+    methods: {
+        handleRowClickT(row) {
+            if(row.TABLE_NAME){
+                this.tableName = row.TABLE_NAME   
+            }
+        }
     }
 }
 </script>

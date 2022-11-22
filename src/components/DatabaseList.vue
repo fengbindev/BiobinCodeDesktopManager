@@ -1,21 +1,53 @@
 <template>
   <div>
-     <el-menu-item :index="database" v-for="database in databaseList" :key="database"> {{database}}</el-menu-item>
+      <RightClickMenu
+        :items='rightMenus'
+        :clickValue='key'
+        :key='key.toString()'
+        v-for='key of databaseList'
+        >
+        <el-menu-item :index="key" > 
+        <!-- <li class='key-item' :title='key'  @click='clickKey(key, $event)'>{{$util.bufToString(key)}}</li> -->
+        <div class="menu-left">
+            <i class="fa fa-database"></i>
+            <span class="title">{{key}}</span>
+        </div>
+        </el-menu-item>
+      </RightClickMenu>
   </div>
 </template>
 
 <script type="text/javascript">
 import storage from '@/storage.js';
-
+import RightClickMenu from '@/components/RightClickMenu';
 export default {
   data() {
     return {
-      databaseList: []
+      databaseList: [],
+      rightMenus: [
+        {
+          name: '删除DB',
+          click: (clickValue, event) => {
+            this.$confirm(
+              '确认删除？',
+              { type: 'warning' },
+            ).then(() => {
+               this.removeKeyFromKeyList(clickValue);
+            }).catch(() => {});
+           
+          },
+        },
+        {
+          name: this.$t('message.open'),
+          click: (clickValue, event) => {
+            this.clickKey(clickValue, event, false);
+          },
+        }
+      ],
     };
   },
   props: ['client', 'config', 'globalSettings'],
-  computed: {
-  },
+  components: {RightClickMenu},
   created() {
     // add or remove key from key list directly
     this.$bus.$on('refreshDatabaseList', (db, key = '', type = 'del') => {
@@ -30,11 +62,13 @@ export default {
       (type == 'del') && this.removeKeyFromKeyList(key);
       (type == 'add') && this.addKeyToKeyList(db, key);
     });
-    this.databaseList = this.client.databases || []
   },
   methods: {
     initShow() {
       this.refreshDatabaseList();
+    },
+    clickKey(key, event = null, newTab = false) {
+      this.$bus.$emit('clicDatabase', this.client, key, newTab);
     },
     refreshDatabaseList(searchVal, searchExact=false) {
       if(!searchVal) {
@@ -60,13 +94,14 @@ export default {
       if (!this.databaseList) {
         return false;
       }
-
       for (let i in this.databaseList) {
-        if (this.databaseList[i].equals(key)) {
+        if (this.databaseList[i] == key) {
           this.databaseList.splice(i, 1);
           break;
         }
       }
+      this.client.databases = this.databaseList || []
+      storage.editConnectionByKey(this.client) 
     },
     addKeyToKeyList(dbConnection, key) {
       if (!this.databaseList) {
@@ -108,6 +143,10 @@ export default {
     height: 22px;
     width: 100%;
     font-size: 75%;
+  }
+
+  .menu-left .title {
+    margin-left: 4px;
   }
 
 </style>

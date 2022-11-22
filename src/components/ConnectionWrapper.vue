@@ -5,8 +5,7 @@
     :id="connectionAnchor"
     @open="openConnection()"
     @select="handleSelect"
-    class="connection-menu"
-    active-text-color="#ffd04b">
+    class="connection-menu">
     <el-submenu :index="config.connectionName">
       <!-- connection menu -->
       <ConnectionMenu
