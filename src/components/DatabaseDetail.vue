@@ -2,19 +2,25 @@
     <el-container class="main">
         <el-aside class="mainAside" width="200px">
             <div v-loading="loadingTableList">
-            <!-- 表列表 -->
-            <el-table :data="tables" highlight-current-row style="width: 100%" @row-click="handleRowClickT">
-                <el-table-column :show-overflow-tooltip='true' prop="TABLE_NAME_COMMENT" label="表名" width="180">
-                    <template slot="header">   
-                        <span>表名</span>
-                    </template>
-                </el-table-column>
-            </el-table>
+                <!-- 表列表 -->
+                <el-table :data="tables" highlight-current-row style="width: 100%" @row-click="handleRowClickT">
+                    <el-table-column :show-overflow-tooltip='true' prop="TABLE_NAME_COMMENT" label="表名" width="180">
+                        <template slot="header">   
+                            <span>表名 <el-input
+                                class="search-input"
+                                size="mini"
+                                placeholder="请输入内容"
+                                @input="searchHandler">
+                                <i slot="prefix" class="el-input__icon el-icon-search"></i>
+                            </el-input></span>
+                        </template>
+                    </el-table-column>
+                </el-table>
             </div>
         </el-aside>
         <el-main style="padding: 0px 10px">
             <GenConfig :tableName="tableName" :client="client" :database="database" />
-        </el-main>
+        </el-main> 
     </el-container>
 
 </template>
@@ -28,8 +34,11 @@ export default {
     data() {
         return {
             loadingTableList: false,
+            menuIsCollapse: true,
             tableName: "",
-            tables:[]
+            tableNameSearch: '',
+            tables:[],
+            tableTmpList: [],
         }
     },
     async created() {
@@ -60,7 +69,7 @@ export default {
                     item.TABLE_NAME_COMMENT = item.TABLE_NAME;
                 }
             });
-            this.tables = results
+            this.tables = this.tableTmpList = results
         });
         connection.end();
         this.loadingTableList = false;
@@ -70,6 +79,10 @@ export default {
             if(row.TABLE_NAME){
                 this.tableName = row.TABLE_NAME   
             }
+        },
+        searchHandler(searchVal) {
+            console.log('searchVal', searchVal)
+            this.tables = this.tableTmpList.filter(item=>item.TABLE_NAME_COMMENT.indexOf(searchVal)>=0)
         }
     }
 }
@@ -79,5 +92,14 @@ export default {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+.search-input {
+    line-height: 0px;
+    width: 140px;
+    margin-bottom: -7px;
+    margin-left: -10px;
+}
+.search-input .el-icon-search {
+    padding-left: 8px;
 }
 </style>

@@ -207,7 +207,7 @@ export default {
     return {
       activeName: 'first', tableHeight: 550, loading: false, columnLoading: false, configLoading: false, dicts: [], syncLoading: false, genLoading: false,
       data: [],
-      form: { id: null, tableName: '', author: '', pack: '', path: '', moduleName: '', cover: 'false', apiPath: '', prefix: '', apiAlias: null },
+      form: { tableName: '', author: '', pack: '', path: '', moduleName: '', cover: 'false', apiPath: '', prefix: '', apiAlias: null },
       rules: {
         author: [
           { required: true, message: '作者不能为空', trigger: 'blur' }
@@ -234,13 +234,15 @@ export default {
     this.tableHeight = document.documentElement.clientHeight - 300
     this.$nextTick(() => {
       if(this.tableName) {
-          this.getColumns()
+          this.getColumns();
+          this.getConfig();
       }
     })
   },
   watch: {
     tableName(tableName) {
-      this.getColumns()
+      this.getColumns();
+      this.getConfig();
     }
   },
   methods: {
@@ -331,12 +333,6 @@ export default {
       this.syncLoading = false
       this.$message.success('同步成功')
     },
-    get() {
-
-    },
-    getDicts() {
-
-    },
     async saveColumnConfig() {
       this.columnLoading = true
       const database =  await this.$indexDB.open("masterDB")
@@ -345,10 +341,26 @@ export default {
       this.columnLoading = false
       this.$message.success('保存成功')
     },
+    async getConfig() {
+      const database =  await this.$indexDB.open("masterDB")
+      let result = await database.get('code_gen_config', this.client.connectionName + "_" + this.tableName)
+      if(result && result.config) {
+        this.form = result.config
+      }else {
+        this.form = {}
+      }
+    }, 
     doSubmit() {
-      this.$refs['form'].validate((valid) => {
+      this.$refs['form'].validate(async (valid) => {
         if (valid) {
           this.configLoading = true
+          const database =  await this.$indexDB.open("masterDB")
+            let data = Object.assign({}, this.form)
+            data.tableName = this.tableName
+            await database.put("code_gen_config", {config: data, configId: this.client.connectionName + "_" + this.tableName})
+            database.close();
+            this.configLoading = false
+            this.$message.success('保存成功')
         }
       })
     },
@@ -362,9 +374,7 @@ export default {
 
 <style scoped>
   .edit-input .el-input__inner {
-     {
-      border: 1px solid #e5e6e7;
-    }
+    border: 1px solid #e5e6e7;
   }
   .input-with-select .el-input-group__prepend {
     background-color: #fff;
