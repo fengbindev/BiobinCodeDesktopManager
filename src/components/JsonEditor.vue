@@ -1,11 +1,11 @@
 <template>
   <div class="text-formated-container">
-    <slot name='default'></slot>
     <!-- collapse btn -->
     <div class="collapse-container">
       <el-button class="collapse-btn"  type="text" @click="toggleCollapse">{{ $t('message.' + collapseText) }}</el-button>
+      <el-button class="collapse-btn"  type="text" @click="copyContent">{{ $t('message.copy') }}</el-button>
     </div>
-
+    <slot name='default'></slot>
     <!-- monaco editor div -->
     <div class="monaco-editor-con" ref="editor"></div>
   </div>
@@ -25,6 +25,7 @@ export default {
   props: {
     content: {type: Array|String, default: () => {}},
     readOnly: {type: Boolean, default: true},
+    language: {type: String, default: 'json'},
   },
   created() {
     // listen font family change and reset options
@@ -75,6 +76,11 @@ export default {
                                           this.monacoEditor.trigger('fold', 'editor.foldAll');
       this.collapseText = this.collapseText == 'expand_all' ? 'collapse_all' : 'expand_all';
     },
+    copyContent() {
+      let content = this.monacoEditor.getValue();
+      this.$util.copyToClipboard(content);
+      this.$message.success(this.$t('message.copy_success'))
+    },
     onResize() {
       // init resizeDebounce
       if (!this.resizeDebounce) this.resizeDebounce = this.$util.debounce(() => {
@@ -96,11 +102,11 @@ export default {
       {
         value: this.newContentStr,
         theme: 'vs-dark',
-        language: 'json',
+        language: this.language,
         links: false,
         readOnly: this.readOnly,
         cursorStyle: this.readOnly ? 'underline-thin' : 'line',
-        lineNumbers: 'off',
+        lineNumbers: 'on',
         contextmenu: false,
         // set fontsize and family to avoid cursor offset
         fontSize: 14,
@@ -149,8 +155,8 @@ export default {
 
 <style type="text/css">
   .text-formated-container .monaco-editor-con {
-    min-height: 150px;
-    height: calc(100vh - 730px);
+    min-height: 350px;
+    height: calc(100vh - 500px);
     clear: both;
     overflow: hidden;
     background: none;

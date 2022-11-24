@@ -8,8 +8,6 @@ function resolve (dir) {
   return path.join(__dirname, '..', dir)
 }
 
-
-
 module.exports = {
   mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
   context: path.resolve(__dirname, '../'),
@@ -29,6 +27,8 @@ module.exports = {
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
       '@': resolve('src'),
+      'handlebars': 'handlebars/dist/handlebars.js',
+      'express-handlebars': 'handlebars/dist/handlebars.js'
     }
   },
   module: {
@@ -87,7 +87,14 @@ module.exports = {
           publicPath: '../../'
         }
       },
-
+      {
+        test: /\.art$/,
+        loader: "art-template-loader",
+        options: {
+            // art-template options (if necessary)
+            // @see https://github.com/aui/art-template
+        }
+      }
     ]
   },
   node: {

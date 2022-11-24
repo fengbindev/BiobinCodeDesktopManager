@@ -14,10 +14,17 @@
               @click="toGen"
             >保存&生成</el-button>
             <el-button
+              icon="el-icon-view"
+              size="mini"
+              style="float: right;padding: 6px 9px;margin-right: 9px"
+              type="success"
+              @click="previewHandler"
+            >预览</el-button>
+            <el-button
               :loading="columnLoading"
               icon="el-icon-check"
               size="mini"
-              style="float: right; padding: 6px 9px;margin-right: 9px"
+              style="float: right; padding: 6px 9px;"
               type="primary"
               @click="saveColumnConfig"
             >保存</el-button>
@@ -194,18 +201,30 @@
         </el-card>
       </el-col>
     </el-row>
+
+    <el-dialog title="生成预览" :visible.sync="previewDialogVisible" width="90%" destroy-on-close class="gen-preview-dialog">
+      <GenPreview ref="previewDialog" :data="previewData" />
+      <template #footer>
+        <el-button @click="previewDialogVisible=false" >取 消</el-button>
+      </template>
+	</el-dialog>
+
   </div>
 </template>
 
 <script>
 import db from '@/db.js'
+import generator from '@/generator.js'
+import GenPreview from './GenPreview.vue'
+let frontIndexTemplate = require('../templates/front/index.art');
+let frontSaveTemplate = require('../templates/front/save.art');
 export default {
   name: 'GeneratorConfig',
-  components: {},
+  components: {GenPreview},
   props: ['client','database','tableName'],
   data() {
     return {
-      activeName: 'first', tableHeight: 550, loading: false, columnLoading: false, configLoading: false, dicts: [], syncLoading: false, genLoading: false,
+      activeName: 'first', tableHeight: 550, loading: false, columnLoading: false, configLoading: false, dicts: [], syncLoading: false, genLoading: false,previewDialogVisible: false,
       data: [],
       form: { tableName: '', author: '', pack: '', path: '', moduleName: '', cover: 'false', apiPath: '', prefix: '', apiAlias: null },
       rules: {
@@ -227,7 +246,8 @@ export default {
         cover: [
           { required: true, message: '不能为空', trigger: 'blur' }
         ]
-      }
+      },
+      previewData: []
     }
   },
   created() {
@@ -238,6 +258,14 @@ export default {
           this.getConfig();
       }
     })
+    // console.log(template)
+    // var render = require('../templates/test.art');
+    // console.log('html', render({
+    //   column:[],
+    //   base: {
+    //     rowKey: 'xx'
+    //   }
+    // }))
   },
   watch: {
     tableName(tableName) {
@@ -349,6 +377,7 @@ export default {
       }else {
         this.form = {}
       }
+      return this.form
     }, 
     doSubmit() {
       this.$refs['form'].validate(async (valid) => {
@@ -364,9 +393,29 @@ export default {
         }
       })
     },
+    previewHandler() {
+      this.previewDialogVisible = true
+      let data = generator.getGenData(this.data, this.form);
+      this.previewData = [
+        {
+          name: 'index.vue',
+          content: frontIndexTemplate(data),
+          language: 'javascript'
+        },
+         {
+          name: 'save.vue',
+          content: frontSaveTemplate(data),
+          language: 'javascript'
+        }
+      ]
+    },
     toGen() {
       this.genLoading = true
-   
+      let data = generator.getGenData(this.data, this.form);
+      console.log('data', data)
+      console.log(frontIndexTemplate(data))
+      console.log(frontSaveTemplate(data))
+      this.genLoading = false
     }
   }
 }
@@ -378,5 +427,10 @@ export default {
   }
   .input-with-select .el-input-group__prepend {
     background-color: #fff;
+  }
+</style>
+<style>
+  .gen-preview-dialog .el-dialog__body {
+    padding-top: 10px;
   }
 </style>
