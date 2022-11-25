@@ -218,6 +218,8 @@ import generator from '@/generator.js'
 import GenPreview from './GenPreview.vue'
 let frontIndexTemplate = require('../templates/front/index.art');
 let frontSaveTemplate = require('../templates/front/save.art');
+let adminDomainTemplate = require('../templates/admin/domain.art');
+let adminMapperTemplate = require('../templates/admin/mapper.art');
 export default {
   name: 'GeneratorConfig',
   components: {GenPreview},
@@ -396,17 +398,28 @@ export default {
     previewHandler() {
       this.previewDialogVisible = true
       let data = generator.getGenData(this.data, this.form);
+      console.log(data)
       this.previewData = [
         {
           name: 'index.vue',
-          content: frontIndexTemplate(data),
+          content: this.replaceBlank(frontIndexTemplate(data)),
           language: 'javascript'
         },
-         {
+        {
           name: 'save.vue',
-          content: frontSaveTemplate(data),
+          content: this.replaceBlank(frontSaveTemplate(data)),
           language: 'javascript'
-        }
+        },
+        {
+          name: 'domain.java',
+          content: this.replaceBlank(adminDomainTemplate(data)),
+          language: 'java'
+        },
+        {
+          name: 'mapper.java',
+          content: this.replaceBlank(adminMapperTemplate(data)),
+          language: 'java'
+        },
       ]
     },
     toGen() {
@@ -416,6 +429,9 @@ export default {
       console.log(frontIndexTemplate(data))
       console.log(frontSaveTemplate(data))
       this.genLoading = false
+    },
+    replaceBlank(content){
+      return content.replace(/(\n[\s\t]*\r*\n)/g, '\n\n').replace(/^[\n\r\n\t]*|[\n\r\n\t]*$/g, '')
     }
   }
 }

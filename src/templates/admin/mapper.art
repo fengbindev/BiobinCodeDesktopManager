@@ -1,0 +1,17 @@
+package <%= _package %>.mapper;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import <%= _package %>.domain.<%= className %>;
+
+
+/**
+ * <p>
+ * <%= tableName %> Mapper 接口
+ * </p>
+ *
+ * @author <%= author %>
+ * @since <%= date %>
+ */
+public interface <%= className %>Mapper extends BaseMapper<<%= className %>> {
+
+}

@@ -1,0 +1,42 @@
+package <%= _package %>.domain;
+
+import com.baomidou.mybatisplus.annotation.*;
+
+import java.util.Date;
+import java.io.Serializable;
+import io.swagger.annotations.ApiModelProperty;
+import cn.hutool.core.bean.copier.CopyOptions;
+<% if (isNotNullColumns) { %>
+import javax.validation.constraints.*;
+<% } %>
+<% if (hasBigDecimal) { %>
+import java.math.BigDecimal;
+<% } %>
+/**
+ * <p>
+ * <%= tableName %>
+ * </p>
+ *
+ * @author <%= author %>
+ * @since <%= date %>
+ */
+@TableName("<%= tableName %>")
+public class <%= className %> implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+    <% for(var i = 0; i < columns.length; i++){ %>
+    <% if (columns[i].columnKey == 'PRI') { %>@TableId(type = IdType.AUTO)<% } %>
+    <% if (columns[i].istNotNull && columns[i].columnType == 'String') { %>@NotBlank<% } else if(columns[i].istNotNull ) { %>@NotNull <% } %>
+    <% if (columns[i].remark != '') { %>@ApiModelProperty(value = "<%= columns[i].remark %>")<% } else { %>@ApiModelProperty(value = "<%= columns[i].changeColumnName %>")<% } %>
+    private <%= columns[i].columnType %> <%= columns[i].changeColumnName %>;
+    <% } %>
+    <% for(var i = 0; i < columns.length; i++){ %>
+    public <%= columns[i].columnType %> get<%= columns[i].capitalColumnName %>() {
+        return <%= columns[i].changeColumnName %>;
+    }
+    public void set<%= columns[i].capitalColumnName %>(<%= columns[i].columnType %> <%= columns[i].changeColumnName %>) {
+        this.<%= columns[i].changeColumnName %> = <%= columns[i].changeColumnName %>
+    }<% } %>
+    
+
+}

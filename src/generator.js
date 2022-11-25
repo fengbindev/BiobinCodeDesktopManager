@@ -80,13 +80,11 @@ export default {
      * @param {*} configId 
      */
     getGenData(columnInfos, config) {
-        console.log('columnInfos', columnInfos)
-        console.log('config', config)
         let data = {}
         // 接口别名
         data.apiAlias = config.apiAlias;
         // 包名称
-        data.package=config.Pack
+        data._package=config.pack
         // 模块名称
         data.moduleName=config.moduleName
         // 作者
