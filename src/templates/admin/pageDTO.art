@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 <% } %>
 /**
  * <p>
- * <%= simpleName %>
+ * <%= simpleName %> 分页查询参数
  * </p>
  *
  * @author <%= author %>

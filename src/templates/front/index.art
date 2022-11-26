@@ -60,7 +60,7 @@
 		},
 		data() {
 			return {
-				apiObj: this.$API.<%= moduleName %>.page,
+				apiObj: this.$API.<%= changeClassName %>.page,
 				selection: [],
 				search: {
 					keyword: ""
@@ -105,7 +105,7 @@
 			//删除
 			async table_del(row, index){
 				var reqData = {id: row.id}
-				var res = await this.$API.<%= moduleName %>.delete(reqData);
+				var res = await this.$API.<%= changeClassName %>.delete(reqData);
 				if(res.code == 200){
 					//这里选择刷新整个表格 OR 插入/编辑现有表格数据
 					this.$refs.table.tableData.splice(index, 1);
@@ -137,7 +137,7 @@
 			saveForm(){
 				this.$refs.saveDialog.submit(async (formData) => {
 					this.isSaveing = true;
-					var res = await this.$API.<%= moduleName %>.post(formData);
+					var res = await this.$API.<%= changeClassName %>.post(formData);
 					this.isSaveing = false;
 					if(res.code == 200){
 						//这里选择刷新整个表格 OR 插入/编辑现有表格数据

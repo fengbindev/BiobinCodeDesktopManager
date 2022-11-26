@@ -5,14 +5,34 @@
         <el-card class="box-card" shadow="never">
           <div slot="header" class="clearfix">
             <span class="role-span">字段配置：{{ tableName }}</span>
-            <el-button
+            <!-- <el-button
               :loading="genLoading"
               icon="el-icon-s-promotion"
               size="mini"
               style="float: right; padding: 6px 9px;"
               type="success"
               @click="toGen"
+            >保存&生成</el-button> -->
+            <el-dropdown
+            placement='bottom-start'
+            size="mini"
+            style="float: right;"
+            :show-timeout=100
+            :hide-timeout=300>
+            <el-button
+              :loading="genLoading"
+              size="mini"
+              type="success"
             >保存&生成</el-button>
+            <el-dropdown-menu class='connection-menu-more-ul' slot="dropdown">
+              <el-dropdown-item @click.native='toGen'>
+                <span>百奥云V2模板</span>
+              </el-dropdown-item>
+              <el-dropdown-item divided @click.native='showEditConnection'>
+                <el-link type="primary">自定义模板</el-link>
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
             <el-button
               icon="el-icon-view"
               size="mini"
@@ -24,7 +44,7 @@
               :loading="columnLoading"
               icon="el-icon-check"
               size="mini"
-              style="float: right; padding: 6px 9px;"
+              style="float: right; padding: 6px 9px;margin-right: 9px"
               type="primary"
               @click="saveColumnConfig"
             >保存</el-button>
@@ -166,37 +186,25 @@
               <el-input v-model="form.author" style="width: 40%" />
               <span style="color: #C0C0C0;margin-left: 10px;">类上面的作者名称</span>
             </el-form-item>
-            <el-form-item label="模块名称" prop="moduleName">
-              <el-input v-model="form.moduleName" style="width: 40%" />
-              <span style="color: #C0C0C0;margin-left: 10px;">模块的名称，请选择项目中已存在的模块</span>
+             <el-form-item label="接口名称" prop="apiAlias">
+              <el-input v-model="form.apiAlias" style="width: 40%" />
+              <span style="color: #C0C0C0;margin-left: 10px;">接口的名称，用于控制器与接口文档中</span>
             </el-form-item>
             <el-form-item label="至于包下" prop="pack">
               <el-input v-model="form.pack" style="width: 40%" />
               <span style="color: #C0C0C0;margin-left: 10px;">项目包的名称，生成的代码放到哪个包里面</span>
             </el-form-item>
-            <el-form-item label="接口名称" prop="apiAlias">
-              <el-input v-model="form.apiAlias" style="width: 40%" />
-              <span style="color: #C0C0C0;margin-left: 10px;">接口的名称，用于控制器与接口文档中</span>
-            </el-form-item>
-            <el-form-item label="前端路径" prop="path">
-              <el-input v-model="form.path" style="width: 40%" />
-              <span style="color: #C0C0C0;margin-left: 10px;">输入views文件夹下的目录，不存在即创建</span>
-            </el-form-item>
-            <!--            <el-form-item label="接口目录">-->
-            <!--              <el-input v-model="form.apiPath" style="width: 40%" />-->
-            <!--              <span style="color: #C0C0C0;margin-left: 10px;">Api存放路径[src/api]，为空则自动生成路径</span>-->
-            <!--            </el-form-item>-->
             <el-form-item label="去表前缀" prop="prefix">
               <el-input v-model="form.prefix" placeholder="默认不去除表前缀" style="width: 40%" />
               <span style="color: #C0C0C0;margin-left: 10px;">默认不去除表前缀，可自定义</span>
             </el-form-item>
-            <el-form-item label="是否覆盖" prop="cover">
+            <!-- <el-form-item label="是否覆盖" prop="cover">
               <el-radio-group v-model="form.cover" size="mini" style="width: 40%">
                 <el-radio-button label="true">是</el-radio-button>
                 <el-radio-button label="false">否</el-radio-button>
               </el-radio-group>
               <span style="color: #C0C0C0;margin-left: 10px;">谨防误操作，请慎重选择</span>
-            </el-form-item>
+            </el-form-item> -->
           </el-form>
         </el-card>
       </el-col>
