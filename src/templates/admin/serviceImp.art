@@ -1,0 +1,84 @@
+package <%= _package %>.service.impl;
+
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import <%= _package %>.framework.web.pojo.swaggermodel.DataGridModel;
+import org.springframework.stereotype.Service;
+import com.biobin.field.service.I<%= className %>Service;
+import com.biobin.field.mapper.<%= className %>Mapper;
+import <%= _package %>.domain.<%= className %>;
+import <%= _package %>.dto.<%= className %>PageReqDTO;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import <%= _package %>.framework.web.util.page.Query;
+
+/**
+ * <p>
+ * <%= tableName %> 服务实现类
+ * </p>
+ *
+ * @author <%= author %>
+ * @since <%= date %>
+ */
+@Service
+public class <%= className %>ServiceImpl extends ServiceImpl<<%= className %>Mapper, <%= className %>> implements I<%= className %>Service {
+
+    @Override
+    public DataGridModel<<%= className %>> pageList(<%= className %>PageReqDTO dto) {
+        //dto.setOrgId(ShiroUtils.getCurrentOrgId());
+        //dto.setCropId(ShiroUtils.getCurrentCropId());
+        IPage<<%= className %>> page = new Query<<%= className %>>().getPage(dto);
+        page = this.page(page, Wrappers.<<%= className %>>lambdaQuery()
+        <% for(var i = 0; i < queryColumns.length; i++){ %>
+        <% if (queryColumns[i].queryType == '=') { %>
+            <% if (queryColumns[i].columnType == 'String') { %>
+            .eq(StrUtil.isNotEmpty(dto.get<%= queryColumns[i].capitalColumnName %>()), <%= className %>::get<%= queryColumns[i].capitalColumnName %>, dto.get<%= queryColumns[i].capitalColumnName %>())
+            <% } else {%>
+            .eq(ObjectUtil.isNull(dto.get<%= queryColumns[i].capitalColumnName %>()), <%= className %>::get<%= queryColumns[i].capitalColumnName %>, dto.get<%= queryColumns[i].capitalColumnName %>())
+            <% } %>
+        <% } %>
+        <% if (queryColumns[i].queryType == '!=') { %>
+            <% if (queryColumns[i].columnType == 'String') { %>
+            .ne(StrUtil.isNotEmpty(dto.get<%= queryColumns[i].capitalColumnName %>()), <%= className %>::get<%= queryColumns[i].capitalColumnName %>, dto.get<%= queryColumns[i].capitalColumnName %>())
+            <% } else {%>
+            .ne(ObjectUtil.isNull(dto.get<%= queryColumns[i].capitalColumnName %>()), <%= className %>::get<%= queryColumns[i].capitalColumnName %>, dto.get<%= queryColumns[i].capitalColumnName %>())
+            <% } %>        
+        <% } %>
+        <% if (queryColumns[i].queryType == '>=') { %>
+            <% if (queryColumns[i].columnType == 'String') { %>
+            .ge(StrUtil.isNotEmpty(dto.get<%= queryColumns[i].capitalColumnName %>()), <%= className %>::get<%= queryColumns[i].capitalColumnName %>, dto.get<%= queryColumns[i].capitalColumnName %>())
+            <% } else {%>
+            .ge(ObjectUtil.isNull(dto.get<%= queryColumns[i].capitalColumnName %>()), <%= className %>::get<%= queryColumns[i].capitalColumnName %>, dto.get<%= queryColumns[i].capitalColumnName %>())
+            <% } %>               
+        <% }  %>
+        <% if (queryColumns[i].queryType == '<=') { %>
+            <% if (queryColumns[i].columnType == 'String') { %>
+            .ge(StrUtil.isNotEmpty(dto.get<%= queryColumns[i].capitalColumnName %>()), <%= className %>::get<%= queryColumns[i].capitalColumnName %>, dto.get<%= queryColumns[i].capitalColumnName %>())
+            <% } else {%>
+            .ge(ObjectUtil.isNull(dto.get<%= queryColumns[i].capitalColumnName %>()), <%= className %>::get<%= queryColumns[i].capitalColumnName %>, dto.get<%= queryColumns[i].capitalColumnName %>())
+            <% } %>         
+        <% } %>
+        <% if (queryColumns[i].queryType == 'Like') { %>
+            <% if (queryColumns[i].columnType == 'String') { %>
+            .like(StrUtil.isNotEmpty(dto.get<%= queryColumns[i].capitalColumnName %>()), <%= className %>::get<%= queryColumns[i].capitalColumnName %>, dto.get<%= queryColumns[i].capitalColumnName %>())
+            <% } else {%>
+            .like(ObjectUtil.isNull(dto.get<%= queryColumns[i].capitalColumnName %>()), <%= className %>::get<%= queryColumns[i].capitalColumnName %>, dto.get<%= queryColumns[i].capitalColumnName %>())
+            <% } %>     
+        <% } %>
+        <% if (queryColumns[i].queryType == 'NotNull') { %>
+            <% if (queryColumns[i].columnType == 'String') { %>
+            .notNull(StrUtil.isNotEmpty(dto.get<%= queryColumns[i].capitalColumnName %>()), <%= className %>::get<%= queryColumns[i].capitalColumnName %>, dto.get<%= queryColumns[i].capitalColumnName %>())
+            <% } else {%>
+            .notNull(ObjectUtil.isNull(dto.get<%= queryColumns[i].capitalColumnName %>()), <%= className %>::get<%= queryColumns[i].capitalColumnName %>, dto.get<%= queryColumns[i].capitalColumnName %>())
+            <% } %>
+        <% } %>
+        <% } %>
+        );
+        DataGridModel<<%= className %>> dataGridModel = new DataGridModel<>();
+        dataGridModel.setCurrentPage(dto.getPageNum());
+        dataGridModel.setPageSize(dto.getPageSize());
+        dataGridModel.setTotal(page.getTotal());
+        dataGridModel.setRows(page.getRecords());
+        return dataGridModel;
+    }
+}

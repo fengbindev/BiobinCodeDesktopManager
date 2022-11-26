@@ -93,20 +93,27 @@ export default {
         data.date=this.dateFormat();
         // 表名
         data.tableName=config.tableName
+        data.simpleName=config.tableName
+        data.org=config.tableName
         // 大写开头的类名
         var className = _.upperFirst(_.camelCase(config.tableName));
         // 小写开头的类名
         var changeClassName = _.camelCase(config.tableName);
         // 判断是否去除表前缀
         if (config.prefix) {
-            var tableName = _.startsWith(config.tableName) ? _.replace(config.tableName, config.prefix) : config.tableName
-            className = _.upperFirst(_.camelCase(tableName));
-            changeClassName = _.camelCase(tableName);
+            var simpleName = _.startsWith(config.tableName, config.prefix) ? _.replace(config.tableName, config.prefix, "") : config.tableName
+            data.simpleName = simpleName
+            className = _.upperFirst(_.camelCase(simpleName));
+            changeClassName = _.camelCase(simpleName);
         }
         data.className = className
         data.changeClassName = changeClassName
         // 存在 Timestamp 字段
         data.hasTimestamp = false
+        // 存在 Date 字段
+        data.hasDate = false
+        // 查询类中存在 Date 字段
+        data.queryDate = false
         // 查询类中存在 Timestamp 字段
         data.queryHasTimestamp = false
         // 存在 BigDecimal 字段
@@ -134,6 +141,7 @@ export default {
             item.columnKey = columnInfos[i].keyType
             // 主键类型
             var colType = this.converJavaField(columnInfos[i].columnType)
+            console.log('colType', colType)
             // 小写开头的字段名
             var changeColumnName = _.camelCase(columnInfos[i].columnName);
             // 大写开头的字段名
@@ -149,6 +157,10 @@ export default {
             // 是否存在 Timestamp 类型的字段
             if ("Timestamp" == colType) {
                 data.hasTimestamp = true
+            }
+             // 是否存在 Timestamp 类型的字段
+             if ("Date" == colType || "DateTime" == colType) {
+                data.hasDate = true
             }
             // 是否存在 BigDecimal 类型的字段
             if ("BigDecimal" == colType) {
@@ -188,6 +200,9 @@ export default {
                 // 查询中存储 Timestamp 类型
                 if ("Timestamp" == colType) {
                     data.queryHasTimestamp = true
+                }
+                if ("Date" == colType || "DateTime" == colType) {
+                    data.queryDate = true
                 }
                 if ("BigDecimal" == colType) {
                     data.queryHasBigDecimal = true

@@ -1,0 +1,26 @@
+package <%= _package %>.service;
+
+import com.baomidou.mybatisplus.extension.service.IService;
+import <%= _package %>.domain.<%= className %>;
+import <%= _package %>.dto.<%= className %>PageReqDTO;
+import <%= _package %>.framework.web.pojo.swaggermodel.DataGridModel;
+
+
+/**
+ * <p>
+ * <%= tableName %> 服务类
+ * </p>
+ *
+ * @author <%= author %>
+ * @since <%= date %>
+ */
+public interface I<%= className %>Service extends IService<<%= className %>> {
+
+    /**
+     * 数据分页
+     *
+     * @param dto
+     * @return
+     */
+    DataGridModel<<%= className %>> pageList(<%= className %>PageReqDTO dto);
+}

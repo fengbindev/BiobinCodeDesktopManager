@@ -216,10 +216,20 @@
 import db from '@/db.js'
 import generator from '@/generator.js'
 import GenPreview from './GenPreview.vue'
+const { app } = require('electron');
+const path = require('path');
+const fs = require('fs');
+import JSZip from 'jszip'
+import { saveAs } from 'file-saver'
 let frontIndexTemplate = require('../templates/front/index.art');
 let frontSaveTemplate = require('../templates/front/save.art');
 let adminDomainTemplate = require('../templates/admin/domain.art');
+let adminDtoTemplate = require('../templates/admin/pageDTO.art');
 let adminMapperTemplate = require('../templates/admin/mapper.art');
+let adminMapperXmlTemplate = require('../templates/admin/mapperXml.art');
+let adminServiceTemplate = require('../templates/admin/service.art');
+let adminServiceImpTemplate = require('../templates/admin/serviceImp.art');
+let adminControllerTemplate = require('../templates/admin/controller.art');
 export default {
   name: 'GeneratorConfig',
   components: {GenPreview},
@@ -416,18 +426,60 @@ export default {
           language: 'java'
         },
         {
+          name: 'pageReqDTO.java',
+          content: this.replaceBlank(adminDtoTemplate(data)),
+          language: 'java'
+        },
+        {
           name: 'mapper.java',
           content: this.replaceBlank(adminMapperTemplate(data)),
           language: 'java'
         },
+        {
+          name: 'mapperXml.xml',
+          content: this.replaceBlank(adminMapperXmlTemplate(data)),
+          language: 'xml'
+        },
+        {
+          name: 'service.java',
+          content: this.replaceBlank(adminServiceTemplate(data)),
+          language: 'java'
+        },
+        {
+          name: 'serviceImp.java',
+          content: this.replaceBlank(adminServiceImpTemplate(data)),
+          language: 'java'
+        },
+        {
+          name: 'controller.java',
+          content: this.replaceBlank(adminControllerTemplate(data)),
+          language: 'java'
+        }
       ]
     },
-    toGen() {
+    async toGen() {
       this.genLoading = true
+      // console.log('process.env.userDataPath', process.env.userDataPath)
+      // console.log('global.userDataPath', global.userDataPath)
+      // let data = generator.getGenData(this.data, this.form);
+      // const USER_HOME = process.env.HOME || process.env.USERPROFILE
+      // console.log(USER_HOME)
+      // const fileName = 'xxxxxindex.vue';
+      // fs.writeFile(path.join('./', fileName), this.replaceBlank(frontIndexTemplate(data)), (err) => {});
+      // fs.readFile('xxxxxindex.vue', 'utf8', (err, data) => {
+      //     if (err) { console.log('读取失败'); }
+      //     else {
+      //       console.log(data);
+      //     }
+      // })
       let data = generator.getGenData(this.data, this.form);
-      console.log('data', data)
-      console.log(frontIndexTemplate(data))
-      console.log(frontSaveTemplate(data))
+      const zip = new JSZip();
+      zip.file('index.vue', this.replaceBlank(frontIndexTemplate(data)));
+      zip.file('save.vue', this.replaceBlank(frontSaveTemplate(data)));
+      await zip.generateAsync({ type: 'blob' }).then(content => {
+        // 生成二进制流
+        saveAs(content, 'xxx.zip'); // 利用file-saver保存文件  自定义文件名
+      });
       this.genLoading = false
     },
     replaceBlank(content){

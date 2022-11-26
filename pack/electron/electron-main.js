@@ -11,7 +11,7 @@ const path = require('path');
 // app.commandLine.appendSwitch('disable-gpu');
 
 global.APP_ENV = (process.env.NODE_ENV === 'dev') ? 'dev' : 'production';
-
+process.env.userDataPath = app.getPath('userData');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.

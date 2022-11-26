@@ -1,0 +1,64 @@
+package <%= _package %>.controller;
+
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import <%= _package %>.domain.<%= className %>;
+import <%= _package %>.framework.web.base.BaseController;
+import <%= _package %>.framework.web.pojo.swaggermodel.DataGridModel;
+import <%= _package %>.framework.web.pojo.swaggermodel.ResultModel;
+import com.biobin.field.framework.web.pojo.swaggermodel.SimpleResultModel;
+import <%= _package %>.service.I<%= className %>Service;
+import <%= _package %>.dto.<%= className %>PageReqDTO;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import javax.validation.Valid;
+
+
+/**
+ * <p>
+ * <%= tableName %> 前端控制器
+ * </p>
+ *
+ * @author <%= author %>
+ * @since <%= date %>
+ */
+@Api(tags = "<%= apiAlias %>REST接口")
+@RestController
+@RequestMapping("/api/<%= changeClassName %>")
+public class <%= className %>Controller extends BaseController {
+
+    @Autowired
+    private I<%= className %>Service <%= changeClassName %>Service;
+
+
+    @GetMapping("/page")
+    @ApiOperation("分页查询<%= apiAlias %>")
+    public ResultModel<DataGridModel<<%= className %>>> pageList(@Valid <%= className %>PageReqDTO dto) {
+        return ResultModel.success(<%= changeClassName %>Service.pageList(dto));
+    }
+
+    @ApiOperation("新增<%= apiAlias %>")
+    @PostMapping
+    public SimpleResultModel create<%= className %>(@Valid @RequestBody <%= className %> <%= changeClassName %>) {
+        <%= changeClassName %>Service.save(<%= changeClassName %>);
+        return SimpleResultModel.success();
+    }
+
+    @ApiOperation("修改<%= apiAlias %>")
+    @PutMapping
+    public SimpleResultModel update$<%= className %>(@Valid @RequestBody <%= className %> <%= changeClassName %>) {
+        <%= changeClassName %>Service.updateById(<%= changeClassName %>);
+        return SimpleResultModel.success();
+    }
+
+    @DeleteMapping("/{id}")
+    @ApiOperation("删除<%= apiAlias %>")
+    @ApiImplicitParam(name = "id", value = "id", required = true, paramType = "path", dataTypeClass = Long.class)
+    public SimpleResultModel delete<%= className %>(@PathVariable Long id) {
+        <%= changeClassName %>Service.removeById(id);
+        return SimpleResultModel.success();
+    }
+
+}

@@ -1,0 +1,39 @@
+package <%= _package %>.dto;
+
+import com.baomidou.mybatisplus.annotation.*;
+
+import java.util.Date;
+import java.io.Serializable;
+import io.swagger.annotations.ApiModelProperty;
+import <%= _package %>.framework.web.domain.PageForm;
+<% if (isNotNullColumns) { %>
+import javax.validation.constraints.*;
+<% } %>
+<% if (hasBigDecimal) { %>
+import java.math.BigDecimal;
+<% } %>
+/**
+ * <p>
+ * <%= simpleName %>
+ * </p>
+ *
+ * @author <%= author %>
+ * @since <%= date %>
+ */
+public class <%= className %>PageReqDTO extends PageForm {
+
+    <% for(var i = 0; i < queryColumns.length; i++){ %>
+    <% if (queryColumns[i].istNotNull && queryColumns[i].columnType == 'String') { %>@NotBlank<% } else if(queryColumns[i].istNotNull ) { %>@NotNull <% } %>
+    <% if (queryColumns[i].remark != '') { %>@ApiModelProperty(value = "<%= queryColumns[i].remark %>")<% } else { %>@ApiModelProperty(value = "<%= queryColumns[i].changeColumnName %>")<% } %>
+    private <%= queryColumns[i].columnType %> <%= queryColumns[i].changeColumnName %>;
+    <% } %>
+    <% for(var i = 0; i < queryColumns.length; i++){ %>
+    public <%= queryColumns[i].columnType %> get<%= queryColumns[i].capitalColumnName %>() {
+        return <%= queryColumns[i].changeColumnName %>;
+    }
+    public void set<%= queryColumns[i].capitalColumnName %>(<%= queryColumns[i].columnType %> <%= queryColumns[i].changeColumnName %>) {
+        this.<%= queryColumns[i].changeColumnName %> = <%= queryColumns[i].changeColumnName %>;
+    }<% } %>
+    
+
+}
