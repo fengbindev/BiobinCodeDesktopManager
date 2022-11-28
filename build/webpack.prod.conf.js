@@ -137,6 +137,7 @@ const webpackConfig = merge(baseWebpackConfig, {
     ])
   ],
   optimization: {
+    minimize: false,
     runtimeChunk: {
       name: 'manifest'
     },
