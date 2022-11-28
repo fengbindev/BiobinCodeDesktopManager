@@ -105,7 +105,7 @@ export default {
     },
     addKeyToKeyList(dbConnection, key) {
       if (!this.databaseList) {
-        return false;
+       this.databaseList = []
       }
       for (let i in this.databaseList) {
         if (this.databaseList[i] == key) {

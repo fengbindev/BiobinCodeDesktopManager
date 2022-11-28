@@ -51,23 +51,6 @@ export default {
     return {
       dialogVisible: false,
       labelPosition: 'top',
-      rules: {
-        name: [
-            { required: true, message: '请输入连接名称', trigger: 'blur' },
-        ],
-        host: [
-            { required: true, message: '请输入地址', trigger: 'blur' },
-        ],
-        port: [
-            { required: true, message: '请输入端口', trigger: 'blur' },
-        ],
-        auth: [
-            { required: true, message: '请输入密码', trigger: 'blur' },
-        ],
-        username: [
-            { required: true, message: '请输入用户名', trigger: 'blur' },
-        ],
-      },
       oldKey: '',
       connection: {
         host: '',
@@ -114,6 +97,26 @@ export default {
       return this.editMode ? this.$t('message.edit_connection') :
                               this.$t('message.new_connection')
     },
+    rules() {
+       const rules = {
+        name: [
+            { required: true, message: this.$t('message.rules_connection_name'), trigger: 'blur' },
+        ],
+        host: [
+            { required: true, message: this.$t('message.rules_host'), trigger: 'blur' },
+        ],
+        port: [
+            { required: true, message: this.$t('message.rules_port'), trigger: 'blur' },
+        ],
+        auth: [
+            { required: true, message: this.$t('message.rules_auth'), trigger: 'blur' },
+        ],
+        username: [
+            { required: true, message: this.$t('message.rules_username'), trigger: 'blur' },
+        ]
+      };
+      return rules
+    }
   },
   methods: {
     show() {

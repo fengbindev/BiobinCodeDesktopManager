@@ -72,20 +72,9 @@
     <!-- new key dialog -->
     <el-dialog :title="$t('message.add_new_key')" :visible.sync="newKeyDialog" :close-on-click-modal='false' append-to-body>
       <el-form label-position="top" size="mini" @submit.native.prevent>
-        <el-form-item label="数据库名">
+        <el-form-item :label="$t('message.database_name')">
           <el-input v-model='newKeyName'></el-input>
         </el-form-item>
-
-        <!-- <el-form-item :label="$t('message.key_type')">
-          <el-select style='width: 100%' v-model="selectedNewKeyType">
-              <el-option
-                v-for="(type, showType) in newKeyTypes"
-                :key="type"
-                :label="showType"
-                :value="type">
-              </el-option>
-            </el-select>
-        </el-form-item> -->
       </el-form>
 
       <div slot="footer" class="dialog-footer">

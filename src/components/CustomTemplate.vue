@@ -4,7 +4,7 @@
             <el-input
                 size="mini"
                 style="width:calc(100% - 40px);margin-right:3px"
-                placeholder="请输入内容"
+                :placeholder="$t('message.input_search_content')"
                 @input="searchHandler">
                 <i slot="prefix" class="el-input__icon el-icon-search"></i>
             </el-input>
@@ -18,7 +18,7 @@
         </el-aside>
         <el-main style="padding: 0px 10px">
             <el-row>
-                <el-button type="primary" size="mini" @click="genCode.dialog=true" :disabled="currentTemplate.templateName==''">添加代码模板</el-button>
+                <el-button type="primary" size="mini" @click="genCode.dialog=true" :disabled="currentTemplate.templateName==''">{{$t('message.code_template_add')}}</el-button>
             </el-row>
             <el-tabs v-model="activeName" >
                 <el-tab-pane :label="item.codeTemplateName" :name="item.codeTemplateName" :key="item.codeTemplateName" v-for="item in currentTemplate.codeTemplateList">
@@ -26,9 +26,9 @@
                 </el-tab-pane>
             </el-tabs>
         </el-main>
-        <el-dialog title="添加模板" :visible.sync="template.dialog" :close-on-click-modal='false' append-to-body>
+        <el-dialog :title="$t('message.template_add')" :visible.sync="template.dialog" :close-on-click-modal='false' append-to-body>
             <el-form :model="template" :rules="templateRules" label-position="top" size="mini" ref="templateRef" @submit.native.prevent>
-                <el-form-item label="模板名称" prop="templateName">
+                <el-form-item :label="$t('message.template_name')" prop="templateName">
                 <el-input v-model='template.templateName'></el-input>
                 </el-form-item>
             </el-form>
@@ -37,12 +37,12 @@
                 <el-button type="primary" @click="addTemplate">{{ $t('el.messagebox.confirm') }}</el-button>
             </div>
         </el-dialog>   
-        <el-dialog title="代码模板" :visible.sync="genCode.dialog" :close-on-click-modal='false' append-to-body>
+        <el-dialog :title="$t('message.code_template')" :visible.sync="genCode.dialog" :close-on-click-modal='false' append-to-body>
             <el-form :model="genCode" :rules="codeTemplateRules" label-position="top" size="mini"  ref="codeTemplateRef" @submit.native.prevent>
-                <el-form-item label="模板名称" prop="codeTemplateName">
+                <el-form-item :label="$t('message.template_name')" prop="codeTemplateName">
                     <el-input v-model='genCode.codeTemplateName'></el-input>
                 </el-form-item>
-                <el-form-item label="文件类型" prop="fileType">
+                <el-form-item :label="$t('message.template_file_type')" prop="fileType">
                     <el-input v-model='genCode.fileType'></el-input>
                 </el-form-item>
             </el-form>
@@ -65,19 +65,6 @@ export default {
             tableNameSearch: '',
             templateList: [],
             activeName: '',
-            templateRules: {
-                templateName: [
-                    { required: true, message: '请输入模板名称', trigger: 'blur' },
-                ],
-            },
-            codeTemplateRules: {
-                codeTemplateName: [
-                    { required: true, message: '请输入模板名称', trigger: 'blur' },
-                ],
-                fileType: [
-                    { required: true, message: '请输入文件类型', trigger: 'blur' },
-                ],
-            },
             currentTemplate: {
                 templateName: '',
                 codeTemplateList: []
@@ -93,6 +80,27 @@ export default {
             }
         }
     },
+    computed: {
+      templateRules() {
+        const rules = {
+            templateName: [
+              { required: true, message: this.$t('message.template_info1'), trigger: 'blur' },
+            ],
+        };
+        return rules
+      },
+      codeTemplateRules() {
+        const rules = {
+            codeTemplateName: [
+                { required: true, message: this.$t('message.template_info1'), trigger: 'blur' },
+            ],
+            fileType: [
+                { required: true, message: this.$t('message.template_info2'), trigger: 'blur' },
+            ],
+        };
+        return rules
+      },
+  },
     async created() {
        this.loadingTableList = true;
        this.templateList = this.getLocalStoryTemplateList()
@@ -137,7 +145,7 @@ export default {
                 (item.templateName === this.template.templateName) && (exists = true);
             });
             if(exists) {
-                this.$message.error("模板已经存在");
+                this.$message.error(this.$t('message.template_info3'));
                 return;
             }
             this.templateList.push({templateName: this.template.templateName, codeTemplateList:[]})
@@ -154,7 +162,7 @@ export default {
                 (item.codeTemplateName === this.genCode.codeTemplateName) && (exists = true);
             });
             if(exists) {
-                this.$message.error("模板已经存在");
+                this.$message.error(this.$t('message.template_info3'));
                 return;
             }
             this.currentTemplate.codeTemplateList.push({

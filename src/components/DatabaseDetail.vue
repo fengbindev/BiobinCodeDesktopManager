@@ -4,7 +4,7 @@
             <el-input
                 size="mini"
                 style="width:calc(100% - 10px);margin-right:5px"
-                placeholder="请输入内容"
+                :placeholder="$t('message.input_search_content')"
                 @input="searchHandler">
                 <i slot="prefix" class="el-input__icon el-icon-search"></i>
             </el-input>
@@ -16,7 +16,7 @@
                             <span>表名 <el-input
                                 class="search-input"
                                 size="mini"
-                                placeholder="请输入内容"
+                                :placeholder="$t('message.input_search_content')"
                                 @input="searchHandler">
                                 <i slot="prefix" class="el-input__icon el-icon-search"></i>
                             </el-input></span>

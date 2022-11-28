@@ -3,7 +3,7 @@
     <div>
       <!-- new connection button -->
       <div class="aside-top-container">
-        <el-button class='aside-setting-btn' type="primary" icon="el-icon-menu" @click="goTemplate" title='模板' plain></el-button>
+        <el-button class='aside-setting-btn' type="primary" icon="el-icon-menu" @click="goTemplate" :title='$t("message.template")+" Ctrl+g"' plain></el-button>
         <!-- <el-button class='aside-setting-btn' type="primary" icon="el-icon-time" @click="$refs.commandLogDialog.show()" :title='$t("message.command_log")+" Ctrl+g"' plain></el-button> -->
         <el-button class='aside-setting-btn' type="primary" icon="el-icon-setting" @click="$refs.settingDialog.show()" :title='$t("message.settings")+" Ctrl+,"' plain></el-button>
 
@@ -69,11 +69,11 @@ export default {
         this.$refs.settingDialog.show();
         return false;
       });
-      // logs
-      // this.$shortcut.bind('ctrl+g, ⌘+g', () => {
-      //   this.$refs.commandLogDialog.show();
-      //   return false;
-      // });
+      // template
+      this.$shortcut.bind('ctrl+g, ⌘+g', () => {
+        this.goTemplate();
+        return false;
+      });
     },
   },
   mounted() {

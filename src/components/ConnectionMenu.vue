@@ -2,7 +2,7 @@
 <div class="connection-menu-title">
   <div class="connection-opt-icons">
     <!-- right menu operate icons -->
-    <i :title="$t('message.redis_status')"
+    <i :title="$t('message.db_status')"
       class="connection-right-icon fa fa-home"
       @click.stop.prevent="openStatus">
     </i>

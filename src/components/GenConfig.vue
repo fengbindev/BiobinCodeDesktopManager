@@ -4,7 +4,7 @@
       <el-col style="margin-bottom: 10px">
         <el-card class="box-card" shadow="never">
           <div slot="header" class="clearfix">
-            <span class="role-span">字段配置：{{ tableName }}</span>
+            <span class="role-span">{{$t('message.field_config')}}：{{ tableName }}</span>
             <el-dropdown
                 placement='bottom-start'
                 size="mini"
@@ -16,7 +16,7 @@
                   :loading="genLoading"
                   size="mini"
                   type="success"
-                >保存&生成</el-button>
+                >{{$t('message.btn_save_gen')}}</el-button>
                 <el-dropdown-menu class='connection-menu-more-ul' slot="dropdown">
                   <el-dropdown-item @click.native='toGen(temp)' :key="temp.templateName" v-for="temp in codeTemplateList">
                     <span>{{temp.templateName}}</span>
@@ -34,7 +34,7 @@
                 icon="el-icon-view"
                 size="mini"
                 type="success"
-              >预览</el-button>
+              >{{$t('message.btn_preview')}}</el-button>
               <el-dropdown-menu class='connection-menu-more-ul' slot="dropdown">
                 <el-dropdown-item @click.native='previewHandler(temp)' :key="temp.templateName" v-for="temp in codeTemplateList">
                   <span>{{temp.templateName}}</span>
@@ -48,8 +48,8 @@
                 style="float:right;padding: 6px 9px;margin-right:5px"
                 type="primary"
                 @click="saveColumnConfig"
-              >保存</el-button>
-            <el-tooltip class="item" effect="dark" content="数据库中表字段变动时使用该功能" placement="top-start">
+              >{{$t('message.btn_save')}}</el-button>
+            <el-tooltip class="item" effect="dark" :content="$t('message.sync_tooltip')" placement="top-start">
               <el-button
                 :loading="syncLoading"
                 icon="el-icon-refresh"
@@ -57,62 +57,62 @@
                 style="float:right;padding: 6px 9px;margin-right:5px"
                 type="info"
                 @click="syncColumn"
-              >同步</el-button>
+              >{{$t('message.btn_sync')}}</el-button>
             </el-tooltip>
           </div>
           <el-form size="small" label-width="90px">
             <el-table v-loading="loading" :data="data" :max-height="tableHeight" size="small" style="width: 100%;margin-bottom: 15px">
-              <el-table-column prop="columnName" label="字段名称" />
-              <el-table-column prop="columnType" label="字段类型" />
-              <el-table-column prop="remark" label="字段描述">
+              <el-table-column prop="columnName" :label="$t('message.field_name')" />
+              <el-table-column prop="columnType" :label="$t('message.field_type')" />
+              <el-table-column prop="remark" :label="$t('message.field_desc')">
                 <template slot-scope="scope">
                   <el-input v-model="data[scope.$index].remark" size="mini" class="edit-input" />
                 </template>
               </el-table-column>
-              <el-table-column align="center" label="必填" width="70px">
+              <el-table-column align="center" :label="$t('message.notnull')" width="70px">
                 <template slot-scope="scope">
                   <el-checkbox v-model="data[scope.$index].notNull" />
                 </template>
               </el-table-column>
-              <el-table-column align="center" label="列表" width="70px">
+              <el-table-column align="center" :label="$t('message.list_show')" width="70px">
                 <template slot-scope="scope">
                   <el-checkbox v-model="data[scope.$index].listShow" />
                 </template>
               </el-table-column>
-              <el-table-column align="center" label="表单" width="70px">
+              <el-table-column align="center" :label="$t('message.form_show')" width="70px">
                 <template slot-scope="scope">
                   <el-checkbox v-model="data[scope.$index].formShow" />
                 </template>
               </el-table-column>
-              <el-table-column label="表单类型">
+              <el-table-column :label="$t('message.form_type')">
                 <template slot-scope="scope">
-                  <el-select v-model="data[scope.$index].formType" filterable class="edit-input" clearable size="mini" placeholder="请选择">
+                  <el-select v-model="data[scope.$index].formType" filterable class="edit-input" clearable size="mini" :placeholder="$t('message.gen_placeholder')">
                     <el-option
-                      label="文本框"
+                      :label="$t('message.gen_query_option1')"
                       value="Input"
                     />
                     <el-option
-                      label="文本域"
+                      :label="$t('message.gen_query_option2')"
                       value="Textarea"
                     />
                     <el-option
-                      label="单选框"
+                      :label="$t('message.gen_query_option3')"
                       value="Radio"
                     />
                     <el-option
-                      label="下拉框"
+                      :label="$t('message.gen_query_option4')"
                       value="Select"
                     />
                     <el-option
-                      label="日期框"
+                      :label="$t('message.gen_query_option5')"
                       value="Date"
                     />
                   </el-select>
                 </template>
               </el-table-column>
-              <el-table-column label="查询方式">
+              <el-table-column :label="$t('message.query_type')">
                 <template slot-scope="scope">
-                  <el-select v-model="data[scope.$index].queryType" filterable class="edit-input" clearable size="mini" placeholder="请选择">
+                  <el-select v-model="data[scope.$index].queryType" filterable class="edit-input" clearable size="mini" :placeholder="$t('message.gen_placeholder')">
                     <el-option
                       label="="
                       value="="
@@ -144,23 +144,23 @@
                   </el-select>
                 </template>
               </el-table-column>
-              <el-table-column label="日期注解">
+              <el-table-column :label="$t('message.date_anao')">
                 <template slot-scope="scope">
-                  <el-select v-model="data[scope.$index].dateAnnotation" filterable class="edit-input" clearable size="mini" placeholder="请选择">
+                  <el-select v-model="data[scope.$index].dateAnnotation" filterable class="edit-input" clearable size="mini" :placeholder="$t('message.gen_placeholder')">
                     <el-option
-                      label="自动创建时间"
+                      :label="$t('message.gen_auto_createTime')"
                       value="CreationTimestamp"
                     />
                     <el-option
-                      label="自动更新时间"
+                      :label="$t('message.gen_auto_updateTime')"
                       value="UpdateTimestamp"
                     />
                   </el-select>
                 </template>
               </el-table-column>
-              <el-table-column label="关联字典">
+              <el-table-column :label="$t('message.dict_sel')">
                 <template slot-scope="scope">
-                  <el-select v-model="data[scope.$index].dictName" filterable class="edit-input" clearable size="mini" placeholder="请选择">
+                  <el-select v-model="data[scope.$index].dictName" filterable class="edit-input" clearable size="mini" :placeholder="$t('message.gen_placeholder')">
                     <el-option v-for="item in dicts" :key="item.id" :label="item.remark === '' ? item.name : item.remark" :value="item.name" />
                   </el-select>
                 </template>
@@ -172,7 +172,7 @@
       <el-col>
         <el-card class="box-card" shadow="never">
           <div slot="header" class="clearfix">
-            <span class="role-span">生成配置</span>
+            <span class="role-span">{{$t('message.gen_config')}}</span>
             <el-button
               :loading="configLoading"
               icon="el-icon-check"
@@ -180,24 +180,24 @@
               style="float: right; padding: 6px 9px"
               type="primary"
               @click="doSubmit"
-            >保存</el-button>
+            >{{$t('message.btn_save')}}</el-button>
           </div>
-          <el-form ref="form" :model="form" :rules="rules" size="small" label-width="78px">
-            <el-form-item label="作者名称" prop="author">
+          <el-form ref="form" :model="form" :rules="rules" size="small" label-width="120px">
+            <el-form-item :label="$t('message.gen_author')" prop="author">
               <el-input v-model="form.author" style="width: 40%" />
-              <span style="color: #C0C0C0;margin-left: 10px;">类上面的作者名称</span>
+              <span style="color: #C0C0C0;margin-left: 10px;">{{$t('message.gen_author_info')}}</span>
             </el-form-item>
-             <el-form-item label="接口名称" prop="apiAlias">
+             <el-form-item :label="$t('message.gen_api')" prop="apiAlias">
               <el-input v-model="form.apiAlias" style="width: 40%" />
-              <span style="color: #C0C0C0;margin-left: 10px;">接口的名称，用于控制器与接口文档中</span>
+              <span style="color: #C0C0C0;margin-left: 10px;">{{$t('message.gen_api_info')}}</span>
             </el-form-item>
-            <el-form-item label="至于包下" prop="pack">
+            <el-form-item :label="$t('message.gen_pack')" prop="pack">
               <el-input v-model="form.pack" style="width: 40%" />
-              <span style="color: #C0C0C0;margin-left: 10px;">项目包的名称，生成的代码放到哪个包里面</span>
+              <span style="color: #C0C0C0;margin-left: 10px;">{{$t('message.gen_pack_info')}}</span>
             </el-form-item>
-            <el-form-item label="去表前缀" prop="prefix">
-              <el-input v-model="form.prefix" placeholder="默认不去除表前缀" style="width: 40%" />
-              <span style="color: #C0C0C0;margin-left: 10px;">默认不去除表前缀，可自定义</span>
+            <el-form-item :label="$t('message.gen_prefix')" prop="prefix">
+              <el-input v-model="form.prefix"  style="width: 40%" />
+              <span style="color: #C0C0C0;margin-left: 10px;">{{$t('message.gen_prefix_info')}}</span>
             </el-form-item>
             <!-- <el-form-item label="是否覆盖" prop="cover">
               <el-radio-group v-model="form.cover" size="mini" style="width: 40%">
@@ -211,10 +211,10 @@
       </el-col>
     </el-row>
 
-    <el-dialog title="生成预览" :visible.sync="previewDialogVisible" width="90%" destroy-on-close class="gen-preview-dialog">
+    <el-dialog :title="$t('message.btn_preview')" :visible.sync="previewDialogVisible" width="90%" destroy-on-close class="gen-preview-dialog">
       <GenPreview ref="previewDialog" :data="previewData" />
       <template #footer>
-        <el-button @click="previewDialogVisible=false" >取 消</el-button>
+        <el-button @click="previewDialogVisible=false" >{{ $t('el.messagebox.cancel') }}</el-button>
       </template>
 	</el-dialog>
 
@@ -249,28 +249,33 @@ export default {
       activeName: 'first', tableHeight: 550, loading: false, columnLoading: false, configLoading: false, dicts: [], syncLoading: false, genLoading: false,previewDialogVisible: false,
       data: [],
       form: { tableName: '', author: '', pack: '', path: '', moduleName: '', cover: 'false', apiPath: '', prefix: '', apiAlias: null },
-      rules: {
-        author: [
-          { required: true, message: '作者不能为空', trigger: 'blur' }
-        ],
-        pack: [
-          { required: true, message: '包路径不能为空', trigger: 'blur' }
-        ],
-        moduleName: [
-          { required: true, message: '包路径不能为空', trigger: 'blur' }
-        ],
-        path: [
-          { required: true, message: '前端路径不能为空', trigger: 'blur' }
-        ],
-        apiAlias: [
-          { required: true, message: '接口名称不能为空', trigger: 'blur' }
-        ],
-        cover: [
-          { required: true, message: '不能为空', trigger: 'blur' }
-        ]
-      },
       previewData: [],
       codeTemplateList: generator.getTemplateList()
+    }
+  },
+  computed: {
+    rules() {
+       const rules = {
+        author: [
+          { required: true, message: this.$t('message.gen_author_info2'), trigger: 'blur' }
+        ],
+        pack: [
+          { required: true, message: this.$t('message.gen_pack_info2'), trigger: 'blur' }
+        ],
+        // moduleName: [
+        //   { required: true, message: '包路径不能为空', trigger: 'blur' }
+        // ],
+        // path: [
+        //   { required: true, message: this.$t('message.gen_pack_info2'), trigger: 'blur' }
+        // ],
+        apiAlias: [
+          { required: true, message: this.$t('message.gen_api_info2'), trigger: 'blur' }
+        ],
+        // cover: [
+        //   { required: true, message: '不能为空', trigger: 'blur' }
+        // ]
+      };
+      return rules
     }
   },
   created() {

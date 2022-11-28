@@ -147,8 +147,7 @@ export default {
     addTemplate(client) {
       const newTabItem = {
         name: `customTemplate`,
-        label: '自定义模板',
-        title: '自定义模板',
+        label: this.$t('message.template_manager'),
         client: client,
         component: 'template',
       }

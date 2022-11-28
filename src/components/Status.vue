@@ -60,21 +60,21 @@
 
         <p class="server-status-tag-p">
           <el-tag class='server-status-container' type="info" size="big">
-            数据读总数量:
+            {{ $t('message.read_total') }}:
             <span class="server-status-text">{{this.connectionStatus.Innodb_data_reads}}</span>
           </el-tag>
         </p>
 
         <p class="server-status-tag-p">
           <el-tag class='server-status-container' type="info" size="big">
-            数据写总数量:
+            {{ $t('message.write_total') }}:
             <span class="server-status-text">{{this.connectionStatus.Innodb_data_writes}}</span>
           </el-tag>
         </p>
 
         <p class="server-status-tag-p">
           <el-tag class='server-status-container' type="info" size="big">
-            系统日志大小:
+            {{ $t('message.log_total') }}:
             <span class="server-status-text">{{Math.round(this.connectionStatus.Innodb_os_log_written / 1024)}}(KB)</span>
           </el-tag>
         </p>
@@ -91,7 +91,7 @@
 
         <p class="server-status-tag-p">
           <el-tag class='server-status-container' type="info" size="big">
-            运行时间:
+            {{ $t('message.runtime') }}:
             <span class="server-status-text">{{this.connectionStatus.Uptime}}(s)</span>
           </el-tag>
         </p>
@@ -105,7 +105,7 @@
 
         <p class="server-status-tag-p">
           <el-tag class='server-status-container' type="info" size="big">
-            运行线程数:
+            {{ $t('message.runtime_threads') }}:
             <span class="server-status-text">{{this.connectionStatus.Threads_running}}</span>
           </el-tag>
         </p>
