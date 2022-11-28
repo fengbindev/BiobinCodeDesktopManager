@@ -1,4 +1,16 @@
 let _ = require('lodash');
+// import template from 'art-template/lib/template-web.js'
+import {
+    frontIndexTemplateV2, 
+    frontSaveTemplateV2, 
+    adminDomainTemplateV2, 
+    adminDtoTemplateV2, 
+    adminMapperTemplateV2, 
+    adminMapperXmlTemplateV2, 
+    adminServiceTemplateV2, 
+    adminServiceImpTemplateV2, 
+    adminControllerTemplateV2
+} from '@/templates/v2/index.js'
 export default {
     /**
      * 日期格式化
@@ -27,6 +39,33 @@ export default {
         }
         return fmt;
     },
+    getTemplateList() {
+        // 获取模板
+        let localTemplateList = JSON.parse(localStorage.getItem("templateList") || "[]")
+        if (localTemplateList.length == 0) {
+            let templates = [
+                {   
+                    "templateName":"百奥云V2模板",
+                    "codeTemplateList":
+                        [
+                            {"codeTemplateName":"index.vue","fileType":"vue","content": frontIndexTemplateV2},
+                            {"codeTemplateName":"save.vue","fileType":"vue","content": frontSaveTemplateV2},
+                            {"codeTemplateName":"domain.java","fileType":"java","content": adminDomainTemplateV2},
+                            {"codeTemplateName":"pageDTO.java","fileType":"java","content": adminDtoTemplateV2},
+                            {"codeTemplateName":"mapper.java","fileType":"java","content": adminMapperTemplateV2},
+                            {"codeTemplateName":"mapperXml.xml","fileType":"xml","content": adminMapperXmlTemplateV2},
+                            {"codeTemplateName":"service.java","fileType":"java","content": adminServiceTemplateV2},
+                            {"codeTemplateName":"serviceImp.java","fileType":"java","content": adminServiceImpTemplateV2},
+                            {"codeTemplateName":"controller.java","fileType":"java","content": adminControllerTemplateV2},
+                        ]
+                }
+            ]
+            // 保存模板
+            localStorage.setItem("templateList", JSON.stringify(templates)) 
+        }
+        return JSON.parse(localStorage.getItem("templateList") || "[]")
+    },
+       
     /**
      * 转换java字段类型
      * @param {*} type 

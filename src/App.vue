@@ -29,6 +29,8 @@
 import Aside from '@/Aside';
 import Tabs from '@/components/Tabs';
 import UpdateCheck from '@/components/UpdateCheck';
+import generator from '@/generator.js'
+
 
 export default {
   name: 'App',
@@ -41,7 +43,8 @@ export default {
     this.$bus.$on('reloadSettings', () => {
       this.reloadSettings();
     });
-
+    // init system code template
+    generator.getTemplateList()
     // restore side bar width
     this.restoreSideBarWidth();
   },

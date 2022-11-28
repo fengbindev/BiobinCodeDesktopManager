@@ -113,9 +113,12 @@ export default {
           return;
         }
       }
-      this.databaseList.push(key);
-      dbConnection.databases = this.databaseList || []
-      storage.editConnectionByKey(dbConnection) 
+      this.$nextTick(()=> {
+        this.databaseList.push(key);
+        dbConnection.databases = this.databaseList || []
+        storage.editConnectionByKey(dbConnection) 
+      })
+     
     },
   },
   watch: {

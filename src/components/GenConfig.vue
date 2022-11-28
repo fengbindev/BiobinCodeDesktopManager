@@ -5,55 +5,56 @@
         <el-card class="box-card" shadow="never">
           <div slot="header" class="clearfix">
             <span class="role-span">字段配置：{{ tableName }}</span>
-            <!-- <el-button
-              :loading="genLoading"
-              icon="el-icon-s-promotion"
-              size="mini"
-              style="float: right; padding: 6px 9px;"
-              type="success"
-              @click="toGen"
-            >保存&生成</el-button> -->
             <el-dropdown
-            placement='bottom-start'
-            size="mini"
-            style="float: right;"
-            :show-timeout=100
-            :hide-timeout=300>
-            <el-button
-              :loading="genLoading"
+                placement='bottom-start'
+                size="mini"
+                style="float:right"
+                :show-timeout=100
+                :hide-timeout=300>
+                <el-button
+                  style="padding: 6px 9px;margin-right:5px"
+                  :loading="genLoading"
+                  size="mini"
+                  type="success"
+                >保存&生成</el-button>
+                <el-dropdown-menu class='connection-menu-more-ul' slot="dropdown">
+                  <el-dropdown-item @click.native='toGen(temp)' :key="temp.templateName" v-for="temp in codeTemplateList">
+                    <span>{{temp.templateName}}</span>
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+            </el-dropdown>
+            <el-dropdown
+              placement='bottom-start'
               size="mini"
-              type="success"
-            >保存&生成</el-button>
-            <el-dropdown-menu class='connection-menu-more-ul' slot="dropdown">
-              <el-dropdown-item @click.native='toGen'>
-                <span>百奥云V2模板</span>
-              </el-dropdown-item>
-              <el-dropdown-item divided @click.native='customTemplate'>
-                <span>自定义模板</span>
-              </el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
+              style="float:right"
+              :show-timeout=100
+              :hide-timeout=300>
+              <el-button
+              style="padding: 6px 9px;margin-right:5px"
+                icon="el-icon-view"
+                size="mini"
+                type="success"
+              >预览</el-button>
+              <el-dropdown-menu class='connection-menu-more-ul' slot="dropdown">
+                <el-dropdown-item @click.native='previewHandler(temp)' :key="temp.templateName" v-for="temp in codeTemplateList">
+                  <span>{{temp.templateName}}</span>
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
             <el-button
-              icon="el-icon-view"
-              size="mini"
-              style="float: right;padding: 6px 9px;margin-right: 9px"
-              type="success"
-              @click="previewHandler"
-            >预览</el-button>
-            <el-button
-              :loading="columnLoading"
-              icon="el-icon-check"
-              size="mini"
-              style="float: right; padding: 6px 9px;margin-right: 9px"
-              type="primary"
-              @click="saveColumnConfig"
-            >保存</el-button>
+                :loading="columnLoading"
+                icon="el-icon-check"
+                size="mini"
+                style="float:right;padding: 6px 9px;margin-right:5px"
+                type="primary"
+                @click="saveColumnConfig"
+              >保存</el-button>
             <el-tooltip class="item" effect="dark" content="数据库中表字段变动时使用该功能" placement="top-start">
               <el-button
                 :loading="syncLoading"
                 icon="el-icon-refresh"
                 size="mini"
-                style="float: right; padding: 6px 9px;"
+                style="float:right;padding: 6px 9px;margin-right:5px"
                 type="info"
                 @click="syncColumn"
               >同步</el-button>
@@ -229,15 +230,16 @@ const path = require('path');
 const fs = require('fs');
 import JSZip from 'jszip'
 import { saveAs } from 'file-saver'
-let frontIndexTemplate = require('../templates/front/index.art');
-let frontSaveTemplate = require('../templates/front/save.art');
-let adminDomainTemplate = require('../templates/admin/domain.art');
-let adminDtoTemplate = require('../templates/admin/pageDTO.art');
-let adminMapperTemplate = require('../templates/admin/mapper.art');
-let adminMapperXmlTemplate = require('../templates/admin/mapperXml.art');
-let adminServiceTemplate = require('../templates/admin/service.art');
-let adminServiceImpTemplate = require('../templates/admin/serviceImp.art');
-let adminControllerTemplate = require('../templates/admin/controller.art');
+// let frontIndexTemplate = require('../templates/front/index.art');
+// let frontSaveTemplate = require('../templates/front/save.art');
+// let adminDomainTemplate = require('../templates/admin/domain.art');
+// let adminDtoTemplate = require('../templates/admin/pageDTO.art');
+// let adminMapperTemplate = require('../templates/admin/mapper.art');
+// let adminMapperXmlTemplate = require('../templates/admin/mapperXml.art');
+// let adminServiceTemplate = require('../templates/admin/service.art');
+// let adminServiceImpTemplate = require('../templates/admin/serviceImp.art');
+// let adminControllerTemplate = require('../templates/admin/controller.art');
+import template from 'art-template/lib/template-web.js'
 export default {
   name: 'GeneratorConfig',
   components: {GenPreview},
@@ -267,7 +269,8 @@ export default {
           { required: true, message: '不能为空', trigger: 'blur' }
         ]
       },
-      previewData: []
+      previewData: [],
+      codeTemplateList: generator.getTemplateList()
     }
   },
   created() {
@@ -278,6 +281,7 @@ export default {
           this.getConfig();
       }
     })
+
     // console.log(template)
     // var render = require('../templates/test.art');
     // console.log('html', render({
@@ -413,80 +417,78 @@ export default {
         }
       })
     },
-    previewHandler() {
+    previewHandler(templateData) {
       this.previewDialogVisible = true
       let data = generator.getGenData(this.data, this.form);
-      console.log(data)
-      this.previewData = [
-        {
-          name: 'index.vue',
-          content: this.replaceBlank(frontIndexTemplate(data)),
-          language: 'javascript'
-        },
-        {
-          name: 'save.vue',
-          content: this.replaceBlank(frontSaveTemplate(data)),
-          language: 'javascript'
-        },
-        {
-          name: 'domain.java',
-          content: this.replaceBlank(adminDomainTemplate(data)),
-          language: 'java'
-        },
-        {
-          name: 'pageReqDTO.java',
-          content: this.replaceBlank(adminDtoTemplate(data)),
-          language: 'java'
-        },
-        {
-          name: 'mapper.java',
-          content: this.replaceBlank(adminMapperTemplate(data)),
-          language: 'java'
-        },
-        {
-          name: 'mapperXml.xml',
-          content: this.replaceBlank(adminMapperXmlTemplate(data)),
-          language: 'xml'
-        },
-        {
-          name: 'service.java',
-          content: this.replaceBlank(adminServiceTemplate(data)),
-          language: 'java'
-        },
-        {
-          name: 'serviceImp.java',
-          content: this.replaceBlank(adminServiceImpTemplate(data)),
-          language: 'java'
-        },
-        {
-          name: 'controller.java',
-          content: this.replaceBlank(adminControllerTemplate(data)),
-          language: 'java'
-        }
-      ]
+      // this.previewData = [
+      //   {
+      //     name: 'index.vue',
+      //     content: this.replaceBlank(frontIndexTemplate(data)),
+      //     language: 'javascript'
+      //   },
+      //   {
+      //     name: 'save.vue',
+      //     content: this.replaceBlank(frontSaveTemplate(data)),
+      //     language: 'javascript'
+      //   },
+      //   {
+      //     name: 'domain.java',
+      //     content: this.replaceBlank(adminDomainTemplate(data)),
+      //     language: 'java'
+      //   },
+      //   {
+      //     name: 'pageReqDTO.java',
+      //     content: this.replaceBlank(adminDtoTemplate(data)),
+      //     language: 'java'
+      //   },
+      //   {
+      //     name: 'mapper.java',
+      //     content: this.replaceBlank(adminMapperTemplate(data)),
+      //     language: 'java'
+      //   },
+      //   {
+      //     name: 'mapperXml.xml',
+      //     content: this.replaceBlank(adminMapperXmlTemplate(data)),
+      //     language: 'xml'
+      //   },
+      //   {
+      //     name: 'service.java',
+      //     content: this.replaceBlank(adminServiceTemplate(data)),
+      //     language: 'java'
+      //   },
+      //   {
+      //     name: 'serviceImp.java',
+      //     content: this.replaceBlank(adminServiceImpTemplate(data)),
+      //     language: 'java'
+      //   },
+      //   {
+      //     name: 'controller.java',
+      //     content: this.replaceBlank(adminControllerTemplate(data)),
+      //     language: 'java'
+      //   }
+      // ];
+      let codeTemplateList = templateData.codeTemplateList;
+      this.previewData = [];
+      codeTemplateList.map(item=> {
+        this.previewData.push({
+          name: item.codeTemplateName,
+          content: this.replaceBlank(template.render(item.content, data)),
+          language: item.fileType
+        })
+      })
     },
-    async toGen() {
+    async toGen(templateData) {
+      debugger
       this.genLoading = true
-      // console.log('process.env.userDataPath', process.env.userDataPath)
-      // console.log('global.userDataPath', global.userDataPath)
-      // let data = generator.getGenData(this.data, this.form);
-      // const USER_HOME = process.env.HOME || process.env.USERPROFILE
-      // console.log(USER_HOME)
-      // const fileName = 'xxxxxindex.vue';
-      // fs.writeFile(path.join('./', fileName), this.replaceBlank(frontIndexTemplate(data)), (err) => {});
-      // fs.readFile('xxxxxindex.vue', 'utf8', (err, data) => {
-      //     if (err) { console.log('读取失败'); }
-      //     else {
-      //       console.log(data);
-      //     }
-      // })
-      let data = generator.getGenData(this.data, this.form);
+      let codeTemplateList = templateData.codeTemplateList;
       const zip = new JSZip();
-      zip.file('index.vue', this.replaceBlank(frontIndexTemplate(data)));
-      zip.file('save.vue', this.replaceBlank(frontSaveTemplate(data)));
+      let data = generator.getGenData(this.data, this.form);
+      codeTemplateList.map(item=> {
+         zip.file(item.codeTemplateName, this.replaceBlank(template.render(item.content, data)));
+      })
       await zip.generateAsync({ type: 'blob' }).then(content => {
         // 生成二进制流
-        saveAs(content, 'xxx.zip'); // 利用file-saver保存文件  自定义文件名
+        saveAs(content, this.tableName + "_" +templateData.templateName + '.zip'); // 利用file-saver保存文件  自定义文件名
       });
       this.genLoading = false
     },
