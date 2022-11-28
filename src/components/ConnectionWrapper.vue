@@ -113,6 +113,7 @@ export default {
       let _this = this
       var connect = dbClient.createConnection(configCopy.host, configCopy.port, configCopy.username, configCopy.auth)
       connect.connect(function(err) {
+        console.log('err', err)
         if (err) {
           _this.$message.error({
             message: 'DB Connecting On Error: ' + err,
