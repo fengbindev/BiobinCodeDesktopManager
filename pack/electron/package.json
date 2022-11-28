@@ -1,6 +1,6 @@
 {
   "name": "biobin-code-desktop-manager",
-  "version": "1.5.8",
+  "version": "2.0.0",
   "description": "BioBin Code generator,, compatible with Linux, windows, mac",
   "author": "bin.feng",
   "private": true,
@@ -9,12 +9,12 @@
     "electron-updater": "4.6.5",
     "font-list": "^1.4.5"
   },
-  "repository": "github:qishibo/AnotherRedisDesktopManager",
+  "repository": "https://github.com/",
   "build": {
-    "appId": "me.qii404.another-redis-desktop-manager",
+    "appId": "biobin-code-desktop-manager",
     "productName": "百奥云代码生成器",
     "artifactName": "${productName}.${version}.${ext}",
-    "copyright": "Copyright © 2022 qii404.me",
+    "copyright": "Copyright © 2022",
     "asar": true,
     "directories": {
       "output": "build-apps",
@@ -28,8 +28,8 @@
     ],
     "publish": [{
       "provider": "github",
-      "owner": "qishibo",
-      "repo": "AnotherRedisDesktopManager",
+      "owner": "bin.feng",
+      "repo": "",
       "releaseType": "prerelease"
     }],
     "win": {

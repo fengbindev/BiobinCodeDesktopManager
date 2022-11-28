@@ -28,7 +28,7 @@ process.on('uncaughtException', (err, origin) => {
     title: 'Whoops! Uncaught Exception', 
     message: err.stack,
     detail: '\nDon\'t worry, I will fix it! 😎😎\n\n'
-            + 'Submit issue to: \nhttps://github.com/qishibo/AnotherRedisDesktopManager/'
+            + 'Submit Email to: \nbin.feng@biobin.com.cn'
   });
 
   process.exit();
@@ -177,18 +177,18 @@ if (process.platform === 'darwin') {
         // { role: 'window' }
       ]
     },
-    {
-      role: 'help',
-      submenu: [
-        {
-          label: 'Learn More',
-          click: async () => {
-            const { shell } = require('electron')
-            await shell.openExternal('https://github.com/qishibo/AnotherRedisDesktopManager')
-          }
-        }
-      ]
-    }
+    // {
+    //   role: 'help',
+    //   submenu: [
+    //     {
+    //       label: 'Learn More',
+    //       click: async () => {
+    //         const { shell } = require('electron')
+    //         await shell.openExternal('https://github.com/')
+    //       }
+    //     }
+    //   ]
+    // }
   ];
 
   menu = Menu.buildFromTemplate(template);

@@ -478,7 +478,6 @@ export default {
       })
     },
     async toGen(templateData) {
-      debugger
       this.genLoading = true
       let codeTemplateList = templateData.codeTemplateList;
       const zip = new JSZip();

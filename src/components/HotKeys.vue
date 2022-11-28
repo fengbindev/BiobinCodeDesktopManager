@@ -26,16 +26,11 @@ export default {
       return [
         {key: 'Ctrl + n / ⌘ + n', desc: this.$t('message.new_connection')},
         {key: 'Ctrl + , / ⌘ + ,', desc: this.$t('message.settings')},
-        {key: 'Ctrl + g / ⌘ + g', desc: this.$t('message.command_log')},
+        {key: 'Ctrl + g / ⌘ + g', desc: '模板管理'},
         {key: 'Ctrl + w / ⌘ + w', desc: this.$t('message.close') + ' Tab'},
         {key: '⌘ + h', desc: this.$t('message.hide_window')},
         {key: 'Ctrl + [h/m] / ⌘ + m', desc: this.$t('message.minimize_window')},
         {key: 'Ctrl + Enter / ⌘ + Enter', desc: this.$t('message.maximize_window')},
-        {key: 'Ctrl + r / ⌘ + r / F5', desc: this.$t('message.refresh_connection') + ' [Key tab, Info tab]'},
-        {key: 'Ctrl + d / ⌘ + d', desc: this.$t('el.upload.delete') + ' [Key tab]'},
-        {key: 'Ctrl + s / ⌘ + s', desc: this.$t('message.save') + ' [Key tab]'},
-        // {key: 'Ctrl + c / ⌘ + c', desc: 'Ctrl + c [Console tab]'},
-        {key: 'Ctrl + l / ⌘ + l', desc: this.$t('message.clean_up') + ' [Console tab]'},
         {key: 'Ctrl / ⌘ + click key', desc: this.$t('message.open_new_tab')},
         {key: 'Ctrl + ? / ⌘ + ?', desc: this.$t('message.hotkey') + ' Tips'},
       ];

@@ -218,7 +218,7 @@ export default {
 
       const icon = map[component];
 
-      return icon ? icon : 'fa fa-key';
+      return icon ? icon : 'fa fa-database';
     },
     initShortcut() {
       this.$shortcut.bind('ctrl+w, ⌘+w', () => {

@@ -105,8 +105,8 @@
           <a href="###" @click.stop.prevent="showHotkeys">{{ $t('message.hotkey') }}</a>
           <a href="###" @click.stop.prevent="clearCache">{{ $t('message.clear_cache') }}</a>
           <a href="###" @click.stop.prevent="checkUpdate">{{ $t('message.check_update') }}</a>
-          <a href="https://github.com/qishibo/AnotherRedisDesktopManager/releases">{{ $t('message.manual_update') }}</a>
-          <a href="https://github.com/qishibo/AnotherRedisDesktopManager/">{{ $t('message.project_home') }}</a>
+          <a href="https://github.com/">{{ $t('message.manual_update') }}</a>
+          <a href="https://github.com/">{{ $t('message.project_home') }}</a>
         </div>
       </el-card>
     </el-form>

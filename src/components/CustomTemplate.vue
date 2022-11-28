@@ -18,7 +18,7 @@
         </el-aside>
         <el-main style="padding: 0px 10px">
             <el-row>
-                <el-button type="primary" size="mini" style="float: right" @click="genCode.dialog=true" :disabled="currentTemplate.templateName==''">添加代码模板</el-button>
+                <el-button type="primary" size="mini" @click="genCode.dialog=true" :disabled="currentTemplate.templateName==''">添加代码模板</el-button>
             </el-row>
             <el-tabs v-model="activeName" >
                 <el-tab-pane :label="item.codeTemplateName" :name="item.codeTemplateName" :key="item.codeTemplateName" v-for="item in currentTemplate.codeTemplateList">
