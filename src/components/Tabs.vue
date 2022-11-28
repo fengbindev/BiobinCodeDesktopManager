@@ -11,11 +11,12 @@
         </span>
 
         <Status v-if="item.component === 'status'" :client='item.client' class='tab-content-wrappe' :hotKeyScope='item.name'></Status>
+        <CustomTemplate v-if="item.component === 'template'" :client='item.client' class='tab-content-wrappe' :hotKeyScope='item.name'></CustomTemplate>
         <!-- <CliTab v-else-if="item.component === 'cli'" :client='item.client' class='tab-content-wrappe' :hotKeyScope='item.name'></CliTab> -->
         <!-- <DeleteBatch v-else-if="item.component === 'delbatch'" :client='item.client' :rule="item.rule" class='tab-content-wrappe' :hotKeyScope='item.name'></DeleteBatch> -->
         <!-- <MemoryAnalysis v-else-if="item.component === 'memory'" :client='item.client' class='tab-content-wrappe' :hotKeyScope='item.name'></MemoryAnalysis> -->
         <!-- <KeyDetail v-else :client='item.client' :redisKey="item.redisKey" :keyType="item.keyType" class='tab-content-wrappe' :hotKeyScope='item.name'></KeyDetail> -->
-        <DatabaseDetail v-else :client='item.client' :database="item.database" :keyType="item.keyType" class='tab-content-wrappe' :hotKeyScope='item.name'></DatabaseDetail>
+        <DatabaseDetail v-if="item.component === 'database'" :client='item.client' :database="item.database" :keyType="item.keyType" class='tab-content-wrappe' :hotKeyScope='item.name'></DatabaseDetail>
       </el-tab-pane>
     </el-tabs>
 
@@ -37,6 +38,7 @@ import Status from '@/components/Status';
 // import DeleteBatch from '@/components/DeleteBatch';
 // import MemoryAnalysis from '@/components/MemoryAnalysis';
 import DatabaseDetail from '@/components/DatabaseDetail'
+import CustomTemplate from '@/components/CustomTemplate'
 
 export default {
   data() {
@@ -45,15 +47,15 @@ export default {
       tabs: [],
     };
   },
-  components: { Status, DatabaseDetail },
+  components: { Status, DatabaseDetail,CustomTemplate },
   created() {
      // database clicked
      this.$bus.$on('clicDatabase', (client, database, newTab = false) => {
       this.addDatabaseTab(client, database, newTab);
     });
-    // key clicked
-    this.$bus.$on('clickedKey', (client, key, newTab = false) => {
-      this.addKeyTab(client, key, newTab);
+    // custom template
+     this.$bus.$on('clicTemplate', (client) => {
+      this.addTemplate(client);
     });
 
     // open status tab
@@ -64,16 +66,6 @@ export default {
     // open cli tab
     this.$bus.$on('openCli', (client, tabName) => {
       this.addCliTab(client, tabName);
-    });
-
-    // open delete batch tab
-    this.$bus.$on('openDelBatch', (client, tabName, rule = {}) => {
-      this.addDelBatchTab(client, tabName, rule);
-    });
-
-    // open memory anaysis tab
-    this.$bus.$on('memoryAnalysis', (client, tabName) => {
-      this.addMemoryTab(client, tabName);
     });
 
     // remove pre tab
@@ -152,45 +144,15 @@ export default {
 
       this.addTab(newTabItem, newTab);
     },
-    addDelBatchTab(client, tabName, rule = {}) {
+    addTemplate(client) {
       const newTabItem = {
-        name: `del_batch_${tabName}_${Math.random()}`,
-        label: this.$util.cutString(tabName),
-        title: tabName,
+        name: `customTemplate`,
+        label: '自定义模板',
+        title: '自定义模板',
         client: client,
-        component: 'delbatch',
-        rule: rule,
+        component: 'template',
       }
-
-      this.addTab(newTabItem, true);
-    },
-    addMemoryTab(client, tabName) {
-      const newTabItem = {
-        name: `memory_analysis_${tabName}_${Math.random()}`,
-        label: this.$util.cutString(tabName),
-        title: tabName,
-        client: client,
-        component: 'memory',
-      }
-
-      this.addTab(newTabItem, true);
-    },
-    addKeyTab(client, key, newTab = false) {
-      client.type(key).then((type) => {
-        // key not exists
-        if (type === 'none') {
-          this.$message.error({
-            message: `${key} ${this.$t('message.key_not_exists')}`,
-            duration: 1000,
-          });
-
-          return;
-        }
-
-        this.addTab(this.initKeyTabItem(client, key, "string"), newTab);
-      }).catch(e => {
-        this.$message.error('Type Error: ' + e.message);
-      });
+      this.addTab(newTabItem);
     },
     addDatabaseTab(client, database, newTab = false) {
       this.addTab(this.initDatabaseTabItem(client, database), newTab);
@@ -203,20 +165,6 @@ export default {
       return {
         name: name, label: label, title: name, client: client, component: 'database',
         database: database
-      };
-    },
-    initKeyTabItem(client, key, type) {
-      const cutString = this.$util.cutString;
-      const dbIndex = client.condition ? client.condition.select : 0;
-      const connectionName = client.options.connectionName;
-      const keyStr = this.$util.bufToString(key);
-
-      const label = `${cutString(keyStr)} | ${cutString(connectionName)} | DB${dbIndex}`;
-      const name  = `${keyStr} | ${connectionName} | DB${dbIndex}`;
-
-      return {
-        name: name, label: label, title: name, client: client, component: 'key',
-        redisKey: key, keyType: type,
       };
     },
     addTab(newTabItem, newTab = false) {
@@ -365,7 +313,7 @@ export default {
     overflow-y: auto;
     /*padding-left: 5px;*/
     padding-right: 8px;
-    padding-bottom: 20px;
+    padding-bottom: 0px;
   }
 
   .tabs-context-menu {

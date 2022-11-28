@@ -122,8 +122,8 @@
           <i class="fa fa-info-circle"></i>
           <span>{{ $t('message.all_db_info') }}</span>
           <!-- search input -->
-          <el-input v-model='allInfoFilter' size='mini' suffix-icon="el-icon-search" class='status-filter-input'>
-          </el-input>
+          <!-- <el-input v-model='allInfoFilter' size='mini' suffix-icon="el-icon-search" class='status-filter-input'>
+          </el-input> -->
         </div>
 
         <el-table

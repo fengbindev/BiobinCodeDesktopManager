@@ -23,6 +23,7 @@ export default {
     };
   },
   props: {
+    name: {type: String, default: ''},
     content: {type: Array|String, default: () => {}},
     readOnly: {type: Boolean, default: true},
     language: {type: String, default: 'json'},
@@ -31,9 +32,17 @@ export default {
     // listen font family change and reset options
     // to avoid cursor offset
     this.$bus.$on('fontInited', this.changeFont);
+    this.$nextTick(() => {
+      this.monacoEditor.onDidChangeModelContent((e) => {
+        let content = this.monacoEditor.getValue();
+        this.$emit('contentwatch', this.name, content)
+      })
+    })
+    
   },
   computed: {
     newContentStr() {
+      this.$emit('contentwatch', this.content)
       if (typeof this.content === 'string') {
         return this.content;
       }
@@ -50,7 +59,7 @@ export default {
     },
   },
   methods: {
-    getContent() {
+    getJsonContent() {
       let content = this.monacoEditor.getValue();
 
       if (!this.$util.isJson(content)) {

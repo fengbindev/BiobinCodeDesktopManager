@@ -28,8 +28,8 @@
               <el-dropdown-item @click.native='toGen'>
                 <span>百奥云V2模板</span>
               </el-dropdown-item>
-              <el-dropdown-item divided @click.native='showEditConnection'>
-                <el-link type="primary">自定义模板</el-link>
+              <el-dropdown-item divided @click.native='customTemplate'>
+                <span>自定义模板</span>
               </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
@@ -489,6 +489,9 @@ export default {
         saveAs(content, 'xxx.zip'); // 利用file-saver保存文件  自定义文件名
       });
       this.genLoading = false
+    },
+    customTemplate() {
+        this.$bus.$emit('clicTemplate', this.client);
     },
     replaceBlank(content){
       return content.replace(/(\n[\s\t]*\r*\n)/g, '\n\n').replace(/^[\n\r\n\t]*|[\n\r\n\t]*$/g, '')

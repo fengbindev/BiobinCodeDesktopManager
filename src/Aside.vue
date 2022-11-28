@@ -3,6 +3,7 @@
     <div>
       <!-- new connection button -->
       <div class="aside-top-container">
+        <el-button class='aside-setting-btn' type="primary" icon="el-icon-menu" @click="goTemplate" title='模板' plain></el-button>
         <!-- <el-button class='aside-setting-btn' type="primary" icon="el-icon-time" @click="$refs.commandLogDialog.show()" :title='$t("message.command_log")+" Ctrl+g"' plain></el-button> -->
         <el-button class='aside-setting-btn' type="primary" icon="el-icon-setting" @click="$refs.settingDialog.show()" :title='$t("message.settings")+" Ctrl+,"' plain></el-button>
 
@@ -50,6 +51,9 @@ export default {
     addNewConnection() {
       this.$refs.newConnectionDialog.show();
     },
+    goTemplate(){
+      this.$bus.$emit('clicTemplate', this.client);
+    },
     initShortcut() {
       // new connection
       this.$shortcut.bind('ctrl+n, ⌘+n', () => {
@@ -83,7 +87,7 @@ export default {
     margin-right: 8px;
   }
   .aside-top-container .aside-new-connection-container {
-    margin-right: 55px;
+    margin-right: 109px;
   }
   .aside-new-connection-container .aside-new-connection-btn {
     width: 100%;
