@@ -78,8 +78,10 @@ function createWindow() {
     mainWindow.loadURL(`http://localhost:9988/?version=${app.getVersion()}`);
   }
 
+  if (APP_ENV === 'dev') {
   // Open the DevTools.
-   mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
+  }
 
   mainWindow.on('close', () => {
     mainWindow.webContents.send('closingWindow');
