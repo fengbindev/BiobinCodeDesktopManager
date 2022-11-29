@@ -26,12 +26,15 @@
       "!static/css/*.map",
       "!*.map"
     ],
-    "publish": [{
-      "provider": "github",
-      "owner": "bin.feng",
-      "repo": "",
-      "releaseType": "prerelease"
-    }],
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "fengbindev",
+        "repo": "BiobinCodeDesktopManager",
+        "token": "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",
+        "releaseType": "prerelease"
+      }
+    ],
     "win": {
       "icon": "icons/icon.ico",
       "target": [
