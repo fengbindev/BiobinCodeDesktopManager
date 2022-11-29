@@ -31,7 +31,6 @@
         "provider": "github",
         "owner": "fengbindev",
         "repo": "BiobinCodeDesktopManager",
-        "token": "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",
         "releaseType": "prerelease"
       }
     ],
