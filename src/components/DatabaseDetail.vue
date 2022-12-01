@@ -3,24 +3,14 @@
         <el-aside class="tableTainAside" width="200px">
             <el-input
                 size="mini"
-                style="width:calc(100% - 10px);margin-right:5px"
                 :placeholder="$t('message.input_search_content')"
                 @input="searchHandler">
                 <i slot="prefix" class="el-input__icon el-icon-search"></i>
             </el-input>
             <div v-loading="loadingTableList">
                 <!-- 表列表 -->
-                <el-table :data="tables" highlight-current-row style="width: 100%" @row-click="handleRowClickT">
-                    <el-table-column :show-overflow-tooltip='true' prop="TABLE_NAME_COMMENT" label="表名" width="180">
-                        <!-- <template slot="header">   
-                            <span>表名 <el-input
-                                class="search-input"
-                                size="mini"
-                                :placeholder="$t('message.input_search_content')"
-                                @input="searchHandler">
-                                <i slot="prefix" class="el-input__icon el-icon-search"></i>
-                            </el-input></span>
-                        </template> -->
+                <el-table :data="tables" highlight-current-row @row-click="handleRowClickT">
+                    <el-table-column :show-overflow-tooltip='true' prop="TABLE_NAME_COMMENT" label="表名">
                     </el-table-column>
                 </el-table>
             </div>

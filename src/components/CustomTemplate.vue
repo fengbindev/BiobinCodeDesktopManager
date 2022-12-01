@@ -8,11 +8,17 @@
                 @input="searchHandler">
                 <i slot="prefix" class="el-input__icon el-icon-search"></i>
             </el-input>
-            <el-button type="primary" icon="el-icon-plus" circle style="padding: 5px"  @click="template.dialog=true"></el-button>
+            <el-button type="primary" icon="el-icon-plus" circle style="padding: 5px"  @click="template.dialog=true;template.mod='add'"></el-button>
             <div v-loading="loadingTableList" style="margin-top:5px">
                 <!-- 表列表 -->
-                <el-table :data="templateList" highlight-current-row @row-click="handleRowClickT" style="width:180px">
+                <el-table :data="tableData" highlight-current-row @row-click="handleRowClickT" style="width:180px">
                     <el-table-column :show-overflow-tooltip='true' prop="templateName"></el-table-column>
+                    <el-table-column width="65" :show-overflow-tooltip='true' prop="templateName">
+                         <template slot-scope="scope">
+                            <el-button @click="handleEditClick(scope.row)" type="text" icon="el-icon-edit" size="small"></el-button>
+                            <el-button @click="handleDelClick(scope.row)" type="text" icon="el-icon-delete" size="small"></el-button>
+                        </template>
+                    </el-table-column>
                 </el-table>
             </div>
         </el-aside>
@@ -20,7 +26,7 @@
             <el-row>
                 <el-button type="primary" size="mini" @click="genCode.dialog=true" :disabled="currentTemplate.templateName==''">{{$t('message.code_template_add')}}</el-button>
             </el-row>
-            <el-tabs v-model="activeName" >
+            <el-tabs v-model="activeName" :closable="true" @tab-remove="codeTabRemovehandler">
                 <el-tab-pane :label="item.codeTemplateName" :name="item.codeTemplateName" :key="item.codeTemplateName" v-for="item in currentTemplate.codeTemplateList">
                     <JsonEditor class="custom-template-editor" :content="item.content" :language="item.fileType" :readOnly="false" :name="item.codeTemplateName" @contentwatch="contentwatch"/>
                 </el-tab-pane>
@@ -63,6 +69,7 @@ export default {
         return {
             loadingTableList: false,
             tableNameSearch: '',
+            tableData: [],
             templateList: [],
             activeName: '',
             currentTemplate: {
@@ -70,8 +77,10 @@ export default {
                 codeTemplateList: []
             },
             template: {
+                mod: 'add',
                 dialog: false,
-                templateName: ''
+                templateName: '',
+                originName: ''
             },
             genCode: {
                 dialog: false,
@@ -110,6 +119,7 @@ export default {
         templateList: {
              deep: true,
              handler(newVal, oldVal) {
+                this.tableData = newVal
                 localStorage.setItem("templateList", JSON.stringify(newVal)) 
              }
         }
@@ -129,8 +139,24 @@ export default {
             this.activeName = codeTemplateList.length > 0 ? codeTemplateList[0].codeTemplateName : ''
             this.currentTemplate.codeTemplateList= codeTemplateList;
         },
+        handleEditClick(row) {
+            this.template = {
+                mod: 'edit',
+                dialog: true,
+                templateName: row.templateName,
+                originName: row.templateName,
+            }
+        },
+        handleDelClick(row) {
+             this.$confirm(
+                `确定删除 ${row.templateName} 模板吗？`,
+                { type: 'warning' },
+            ).then(() => {
+                this.templateList = this.templateList.filter(item => item.templateName != row.templateName )
+            }).catch(() => {});
+        },
         searchHandler(searchVal) {
-            //this.templateList = this.tableTmpList.filter(item=>item.TABLE_NAME_COMMENT.indexOf(searchVal)>=0)
+            this.tableData = this.templateList.filter(item=>item.templateName.indexOf(searchVal)>=0)
         },
         getLocalStoryTemplateList() {
             return JSON.parse(localStorage.getItem("templateList") || "[]");
@@ -148,7 +174,15 @@ export default {
                 this.$message.error(this.$t('message.template_info3'));
                 return;
             }
-            this.templateList.push({templateName: this.template.templateName, codeTemplateList:[]})
+            if(this.template.mod == 'add') {
+                this.templateList.push({templateName: this.template.templateName, codeTemplateList:[]})
+            }else {
+                this.templateList.map(item => {
+                    if(item.templateName == this.template.originName) {
+                        item.templateName =  this.template.templateName
+                    }
+                })
+            }
             this.template.templateName = ""
             this.template.dialog = false        
         },
@@ -194,6 +228,21 @@ export default {
                 })
                 localStorage.setItem("templateList", JSON.stringify(templateList)) 
             }
+        },
+        codeTabRemovehandler(codeTemplateName) {
+            this.$confirm(
+                `确定删除 ${codeTemplateName} 模板吗？`,
+                { type: 'warning' },
+            ).then(() => {
+                this.templateList.map(item => {
+                    if(item.templateName == this.currentTemplate.templateName) {
+                        if(item.codeTemplateList) {
+                            item.codeTemplateList = item.codeTemplateList.filter((codeTemplate) =>  codeTemplate.codeTemplateName != codeTemplateName)
+                            this.currentTemplate.codeTemplateList = item.codeTemplateList
+                        }
+                    }
+                })
+            }).catch(() => {});
         }
     }
 }
