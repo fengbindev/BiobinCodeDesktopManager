@@ -212,19 +212,24 @@ export default {
       }
 
       config = JSON.parse(config);
+      let connections = config.connections
+      let templates = config.templates
       // remove all connections first
       storage.setConnections({});
       // close all connections
       this.$bus.$emit('closeConnection');
       this.$bus.$emit('refreshConnections');
 
-      for (const line of config) {
+      for (const line of connections) {
         storage.addConnection(line);
       }
 
       this.$nextTick(() => {
         this.$bus.$emit('refreshConnections');
       });
+
+      // set localstory template
+      storage.setTemplates(templates);
 
       this.$message.success({
         message: this.$t('message.import_success'),
@@ -233,8 +238,13 @@ export default {
     },
     exportConnection() {
       let connections = storage.getConnections(true);
-      connections = this.$util.base64Encode(JSON.stringify(connections));
-      this.createAndDownloadFile('connections.ano', connections);
+      let templates = storage.getTemplates();
+      let exportData = {
+        connections: connections,
+        templates: templates
+      }
+      exportData = this.$util.base64Encode(JSON.stringify(exportData));
+      this.createAndDownloadFile('connections.ano', exportData);
       this.visible = false;
     },
     createAndDownloadFile(fileName, content) {

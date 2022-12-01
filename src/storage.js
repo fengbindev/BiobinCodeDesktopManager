@@ -160,4 +160,15 @@ export default {
 
     return newConnections;
   },
+  /**
+   * 模板相关存储方法
+   */
+  getTemplates() {
+    let templateList = localStorage.templateList || '[]';
+    templateList = JSON.parse(templateList);
+    return templateList;
+  },
+  setTemplates(templateList) {
+    localStorage.templateList = JSON.stringify(templateList);
+  }
 };
