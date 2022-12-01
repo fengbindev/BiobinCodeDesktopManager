@@ -149,7 +149,7 @@ export default {
         },
         handleDelClick(row) {
              this.$confirm(
-                `确定删除 ${row.templateName} 模板吗？`,
+                this.$t('message.template_del_info', {name: row.templateName}),
                 { type: 'warning' },
             ).then(() => {
                 this.templateList = this.templateList.filter(item => item.templateName != row.templateName )
@@ -231,7 +231,7 @@ export default {
         },
         codeTabRemovehandler(codeTemplateName) {
             this.$confirm(
-                `确定删除 ${codeTemplateName} 模板吗？`,
+                this.$t('message.template_del_info', {name: codeTemplateName}),
                 { type: 'warning' },
             ).then(() => {
                 this.templateList.map(item => {

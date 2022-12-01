@@ -121,6 +121,7 @@ const cn = {
     template_info1: '请输入模板名称',
     template_info2: '请输入文件类型',
     template_info3: '模板已经存在',
+    template_del_info: '确定删除 {name} 模板吗？',
     import: '导入',
     export: '导出',
     open: '打开',

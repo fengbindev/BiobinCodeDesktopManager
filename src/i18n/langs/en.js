@@ -125,6 +125,7 @@ const en = {
     template_info1: 'Please enter a template name',
     template_info2: 'Please enter the file type',
     template_info3: 'The template already exists',
+    template_del_info: 'Are you sure to delete the {name} template?',
     import: 'Import',
     export: 'Export',
     open: 'Open',
