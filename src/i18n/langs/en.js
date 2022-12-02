@@ -150,7 +150,7 @@ const en = {
     update_download_progress: 'Download Progress',
     update_downloaded: 'Update Download Completed, Restart Your App Please.\
     [Tips]: If you are using Windows, after closing the app, waiting the desktop icon to refresh to a normal state(about 10 seconds), and then you can reopen it',
-    mac_not_support_auto_update: 'Mac Does Not Support Automatic Update, Please Manually <a href="https://github.com/">Download</a>',
+    mac_not_support_auto_update: 'Mac Does Not Support Automatic Update, Please Manually <a href="https://github.com/fengbindev/BiobinCodeDesktopManager">Download</a>',
     font_family: 'Font Family',
     font_faq_title: 'Font Setting Instructions',
     font_faq: '1. Multiple fonts can be set<br>\
