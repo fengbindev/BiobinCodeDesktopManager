@@ -179,18 +179,18 @@ if (process.platform === 'darwin') {
         // { role: 'window' }
       ]
     },
-    // {
-    //   role: 'help',
-    //   submenu: [
-    //     {
-    //       label: 'Learn More',
-    //       click: async () => {
-    //         const { shell } = require('electron')
-    //         await shell.openExternal('https://github.com/')
-    //       }
-    //     }
-    //   ]
-    // }
+    {
+      role: 'help',
+      submenu: [
+        {
+          label: 'Learn More',
+          click: async () => {
+            const { shell } = require('electron')
+            await shell.openExternal('https://github.com/fengbindev/BiobinCodeDesktopManager')
+          }
+        }
+      ]
+    }
   ];
 
   menu = Menu.buildFromTemplate(template);
