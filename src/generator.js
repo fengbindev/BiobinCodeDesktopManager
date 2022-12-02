@@ -247,7 +247,7 @@ export default {
                     data.queryHasBigDecimal = true
                 }
                 if ("between" == columnInfos[i].queryType) {
-                    data.betweens.add(item);
+                    data.betweens.push(item);
                 } else {
                     // 添加到查询列表中
                     data.queryColumns.push(item);

@@ -126,6 +126,8 @@ const en = {
     template_info2: 'Please enter the file type',
     template_info3: 'The template already exists',
     template_del_info: 'Are you sure to delete the {name} template?',
+    template_desc: 'Description of template Variables',
+    template_desc_title: 'Template engine is used artTemplate, grammar reference its official documents: https://aui.github.io/art-template/', 
     import: 'Import',
     export: 'Export',
     open: 'Open',

@@ -24,7 +24,8 @@
         </el-aside>
         <el-main style="padding: 0px 10px">
             <el-row>
-                <el-button type="primary" size="mini" @click="genCode.dialog=true" :disabled="currentTemplate.templateName==''">{{$t('message.code_template_add')}}</el-button>
+                <el-button type="info" size="mini" icon="el-icon-info" @click="desc.dialog=true">{{$t('message.template_desc')}}</el-button>
+                <el-button type="primary" size="mini" icon="el-icon-plus" @click="genCode.dialog=true" :disabled="currentTemplate.templateName==''">{{$t('message.code_template_add')}}</el-button>
             </el-row>
             <el-tabs v-model="activeName" :closable="true" @tab-remove="codeTabRemovehandler">
                 <el-tab-pane :label="item.codeTemplateName" :name="item.codeTemplateName" :key="item.codeTemplateName" v-for="item in currentTemplate.codeTemplateList">
@@ -32,6 +33,10 @@
                 </el-tab-pane>
             </el-tabs>
         </el-main>
+        <el-dialog :title="$t('message.template_desc')" :visible.sync="desc.dialog" :close-on-click-modal='false' append-to-body>
+            <el-alert :title="$t('message.template_desc_title')" type="info" show-icon></el-alert>
+            <JsonEditor :content="desc.content" language="json"/>
+        </el-dialog>   
         <el-dialog :title="$t('message.template_add')" :visible.sync="template.dialog" :close-on-click-modal='false' append-to-body>
             <el-form :model="template" :rules="templateRules" label-position="top" size="mini" ref="templateRef" @submit.native.prevent>
                 <el-form-item :label="$t('message.template_name')" prop="templateName">
@@ -67,6 +72,91 @@ export default {
     components: {JsonEditor},
     data() {
         return {
+            desc: {
+                dialog: false,
+                content: `
+{
+    "apiAlias": "接口别名",
+    "_package": "包名称",
+    "author": "作者",
+    "date": "创建日期",
+    "tableName": "表名",
+    "simpleName": "去除前缀后的表名",
+    "className": "大写开头的类名",
+    "changeClassName": "小写开头的类名",
+    "hasTimestamp": "是否存在 Timestamp 字段",
+    "hasDate": "是否存在 Date 字段",
+    "queryDate": "查询类中存在 Date 字段",
+    "queryHasTimestamp": "查询类中存在 Timestamp 字段",
+    "hasBigDecimal": "是否存在 BigDecimal 字段",
+    "queryHasBigDecimal": "查询类中存在 BigDecimal 字段",
+    "hasQuery": "是否需要创建查询",
+    "auto": "是否自增主键",
+    "hasDict": "是否存在字典",
+    "hasDateAnnotation": "是否存在日期注解",
+    "pkColumnType": "主键字段类型",
+    "pkChangeColName": "主键小写字段名称",
+    "pkCapitalColName": "主键大写字段名称",
+    "asQuery": "是否存在查询",
+    // 所有字段数据
+    "columns": [{
+        "remark": "字段描述",
+        "columnKey": "主键类型",
+        "columnType": "字段类型",
+        "columnName": "字段名称",
+        "istNotNull": "是否非空字段",
+        "columnShow": "是否列表显示",
+        "formShow": "是否表单显示",
+        "formType": "表单组件类型",
+        "changeColumnName": "小写开头的字段名",
+        "capitalColumnName": "大写开头的字段名",
+        "queryType": "查询方式"
+    }],
+    // 查询字段列表
+    "queryColumns": [{
+        "remark": "字段描述",
+        "columnKey": "主键类型",
+        "columnType": "字段类型",
+        "columnName": "字段名称",
+        "istNotNull": "是否非空字段",
+        "columnShow": "是否列表显示",
+        "formShow": "是否表单显示",
+        "formType": "表单组件类型",
+        "changeColumnName": "小写开头的字段名",
+        "capitalColumnName": "大写开头的字段名",
+        "queryType": "查询方式"
+    }],
+    // 范围查询字段列表
+    "betweens": [{
+        "remark": "字段描述",
+        "columnKey": "主键类型",
+        "columnType": "字段类型",
+        "columnName": "字段名称",
+        "istNotNull": "是否非空字段",
+        "columnShow": "是否列表显示",
+        "formShow": "是否表单显示",
+        "formType": "表单组件类型",
+        "changeColumnName": "小写开头的字段名",
+        "capitalColumnName": "大写开头的字段名",
+        "queryType": "查询方式"
+    }],
+    // 不为空的字段列表
+    "isNotNullColumns": [{
+        "remark": "字段描述",
+        "columnKey": "主键类型",
+        "columnType": "字段类型",
+        "columnName": "字段名称",
+        "istNotNull": "是否非空字段",
+        "columnShow": "是否列表显示",
+        "formShow": "是否表单显示",
+        "formType": "表单组件类型",
+        "changeColumnName": "小写开头的字段名",
+        "capitalColumnName": "大写开头的字段名",
+        "queryType": "查询方式"
+    }],
+}
+                `,
+            },
             loadingTableList: false,
             tableNameSearch: '',
             tableData: [],

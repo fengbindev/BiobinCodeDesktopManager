@@ -425,6 +425,7 @@ export default {
     previewHandler(templateData) {
       this.previewDialogVisible = true
       let data = generator.getGenData(this.data, this.form);
+      console.log(data)
       // this.previewData = [
       //   {
       //     name: 'index.vue',
