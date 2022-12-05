@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-<%= simpleName %>-add">
+        <% for(var i = 0; i < columns.length; i++){ %>
+        <% if(columns[i].formShow) %>
+            <% if(columns[i].formShow) {%>
+                <% if(columns[i].formType == 'Input') {%>
+                <div class="form-group">    
+                    <label class="col-sm-3 control-label<% if(columns[i].istNotNull) {%> is-required <% } %>"><%= columns[i].remark %>：</label>
+                    <div class="col-sm-8">
+                        <input name="<%= columns[i].changeColumnName %>" class="form-control" type="text"<% if(columns[i].istNotNull) {%> required<% } %>>
+                    </div>
+                </div>
+                <% } else if (columns[i].formType == 'Textarea') { %>
+                 <div class="form-group">    
+                    <label class="col-sm-3 control-label<% if(columns[i].istNotNull) {%> is-required <% } %>"><%= columns[i].remark %>：</label>
+                    <div class="col-sm-8">
+                        <textarea name="<%= columns[i].changeColumnName %>" class="form-control" <% if(columns[i].istNotNull) {%> required<% } %>></textarea>
+                    </div>
+                </div>
+                <% } else if (columns[i].formType == 'Radio') { %>
+                <div class="form-group">    
+                    <label class="col-sm-3 control-label<% if(columns[i].istNotNull) {%> is-required <% } %>"><%= columns[i].remark %>：</label>
+                    <div class="col-sm-8">
+                        <div class="radio-box">
+                            <input type="radio" name="<%= columns[i].changeColumnName %>" value=""<% if(columns[i].istNotNull) {%> required<% } %>>
+                            <label th:for="<%= columns[i].changeColumnName %>" th:text="未知"></label>
+                        </div>
+                        <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 代码生成请选择字典属性</span>
+                    </div>
+                </div>
+                <% } else if (columns[i].formType == 'Select' ) { %>
+                        <%  if (columns[i].dictName != '' ) { %>
+                <div class="form-group">    
+                    <label class="col-sm-3 control-label<% if(columns[i].istNotNull) {%> is-required <% } %>"><%= columns[i].remark %>：</label>
+                    <div class="col-sm-8">
+                        <select name="<%= columns[i].changeColumnName %>" class="form-control m-b" th:with="type=${@dict.getType('<%= columns[i].dictName %>')}"<% if(columns[i].istNotNull) {%> required<% } %>>
+                            <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                        </select>
+                    </div>
+                </div>
+                        <% } else {%>  
+                <div class="form-group">    
+                    <label class="col-sm-3 control-label#if($column.required) is-required#end">${comment}：</label>
+                    <div class="col-sm-8">
+                        <select name="<%= columns[i].changeColumnName %>" class="form-control m-b" th:with="type=${@dict.getType('<%= columns[i].dictName %>')}"<% if(columns[i].istNotNull) {%> required<% } %>>
+                            <option value="">所有</option>
+                        </select>
+                        <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 代码生成请选择字典属性</span>
+                    </div>
+                </div>
+                        <% } %>
+                <% } else if (columns[i].formType == 'Date') { %>
+                <div class="form-group">    
+                    <label class="col-sm-3 control-label<% if(columns[i].istNotNull) {%> is-required <% } %>"><%= columns[i].remark %>：</label>
+                    <div class="col-sm-8">
+                        <div class="input-group date">
+                            <input name="<%= columns[i].changeColumnName %>" class="time-input form-control" placeholder="yyyy-MM-dd" type="text"<% if(columns[i].istNotNull) {%> required<% } %>>
+                        </div>
+                    </div>
+                </div>
+                <% } %>
+            <% } %>
+        <% } %>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var prefix = ctx + "<%= simpleName %>";
+        $("#form-<%= simpleName %>-add").validate({
+            focusCleanup: true
+        });
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/add", $('#form-<%= simpleName %>-add').serialize());
+            }
+        }
+    </script>
+</body>
+</html>

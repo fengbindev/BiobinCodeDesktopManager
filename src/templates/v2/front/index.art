@@ -40,15 +40,14 @@
 				</el-table-column>
 			</bTable>
 		</el-main>
+		<el-dialog :title="titleMap[saveMode]" v-model="saveDialogVisible" :width="500" destroy-on-close>
+			<save-dialog ref="saveDialog" :mode="saveMode"></save-dialog>
+			<template #footer>
+				<el-button @click="saveDialogVisible=false" >取 消</el-button>
+				<el-button v-if="saveMode!='show'" type="primary" @click="saveForm()" :loading="isSaveing">保 存</el-button>
+			</template>
+		</el-dialog>
 	</el-container>
-
-	<el-dialog :title="titleMap[saveMode]" v-model="saveDialogVisible" :width="500" destroy-on-close>
-		<save-dialog ref="saveDialog" :mode="saveMode"></save-dialog>
-		<template #footer>
-			<el-button @click="saveDialogVisible=false" >取 消</el-button>
-			<el-button v-if="saveMode!='show'" type="primary" @click="saveForm()" :loading="isSaveing">保 存</el-button>
-		</template>
-	</el-dialog>
 </template>
 
 <script>

@@ -11,10 +11,10 @@ import JsonEditor from '@/components/JsonEditor'
 export default {
   name: 'Preview',
   components: { JsonEditor },
-  props: ["data"],
+  props: ["data", "activeName"],
   data() {
     return {
-    height: '', activeName: 'index.vue'
+      height: ''
     }
   },
   created() {

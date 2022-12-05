@@ -108,6 +108,7 @@ export default {
         "columnShow": "是否列表显示",
         "formShow": "是否表单显示",
         "formType": "表单组件类型",
+        "dictName": "关联字典"
         "changeColumnName": "小写开头的字段名",
         "capitalColumnName": "大写开头的字段名",
         "queryType": "查询方式"
@@ -122,6 +123,7 @@ export default {
         "columnShow": "是否列表显示",
         "formShow": "是否表单显示",
         "formType": "表单组件类型",
+        "dictName": "关联字典"
         "changeColumnName": "小写开头的字段名",
         "capitalColumnName": "大写开头的字段名",
         "queryType": "查询方式"
@@ -136,6 +138,7 @@ export default {
         "columnShow": "是否列表显示",
         "formShow": "是否表单显示",
         "formType": "表单组件类型",
+        "dictName": "关联字典"
         "changeColumnName": "小写开头的字段名",
         "capitalColumnName": "大写开头的字段名",
         "queryType": "查询方式"
@@ -150,6 +153,7 @@ export default {
         "columnShow": "是否列表显示",
         "formShow": "是否表单显示",
         "formType": "表单组件类型",
+        "dictName": "关联字典"
         "changeColumnName": "小写开头的字段名",
         "capitalColumnName": "大写开头的字段名",
         "queryType": "查询方式"

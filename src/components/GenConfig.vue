@@ -212,7 +212,7 @@
     </el-row>
 
     <el-dialog :title="$t('message.btn_preview')" :visible.sync="previewDialogVisible" width="90%" destroy-on-close class="gen-preview-dialog">
-      <GenPreview ref="previewDialog" :data="previewData" />
+      <GenPreview ref="previewDialog" :data="previewData" :activeName="previewData.length > 0 ? previewData[0].name : ''"/>
       <template #footer>
         <el-button @click="previewDialogVisible=false" >{{ $t('el.messagebox.cancel') }}</el-button>
       </template>

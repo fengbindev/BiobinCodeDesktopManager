@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+<% if (hasQuery) { %> 
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+    <% for(var i = 0; i < queryColumns.length; i++){ %>
+                        <% if (queryColumns[i].formType == 'Input') { %> 
+                            <li>
+                                <label><%= queryColumns[i].remark %></label>
+                                <input type="text" name="<%= queryColumns[i].changeColumnName %>"/>
+                            </li>
+                        <% } else if (queryColumns[i].formType == 'Textarea') { %>
+                            <li>
+                                <label><%= queryColumns[i].remark %></label>
+                                <input type="text" name="<%= queryColumns[i].changeColumnName %>"/>
+                            </li>
+                        <% } else if (queryColumns[i].formType == 'Radio') { %>
+                            <% if (queryColumns[i].dictName != '') { %> 
+                            <li>
+                                <label><%= queryColumns[i].remark %></label>
+                                <select name="<%= queryColumns[i].changeColumnName %>" th:with="type=${@dict.getType('<%= queryColumns[i].dictName %>')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <% } else  {%>
+                            <li>
+                                <label><%= queryColumns[i].remark %></label>
+                                <input type="text" name="<%= queryColumns[i].changeColumnName %>"/>
+                            </li>
+                            <% } %>
+                        <% } else if (columns[i].formType == 'Select') { %>
+                            <% if (queryColumns[i].dictName != '') { %> 
+                            <li>
+                                <label><%= queryColumns[i].remark %></label>
+                                <select name="<%= queryColumns[i].changeColumnName %>" th:with="type=${@dict.getType('<%= queryColumns[i].dictName %>')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <% } else {%>
+                            <li>
+                                <label><%= queryColumns[i].remark %></label>
+                                <input type="text" name="<%= queryColumns[i].changeColumnName %>"/>
+                            </li>
+                            <% } %>
+                        <% } else if (columns[i].formType == 'Date' && columns[i].queryType != 'BetWeen') { %>
+                            <li>
+                                <label><%= queryColumns[i].remark %></label>
+                                <input type="text" class="time-input" placeholder="请选择<%= queryColumns[i].remark %>" name="<%= queryColumns[i].changeColumnName %>"/>
+                            </li>
+                        <% } %>
+    <% } %>
+    <% for(var i = 0; i < betweens.length; i++){ %>
+                            <li class="select-time">
+                                <label><%= queryColumns[i].remark %></label>
+                                <input type="text" class="time-input" placeholder="开始时间" name="params[begin<%= betweens[i].capitalColumnName %>]"/>
+                                <span>-</span>
+                                <input type="text" class="time-input" placeholder="结束时间" name="params[end$<%= betweens[i].capitalColumnName %>]"/>
+                            </li>
+     <% } %>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+<% } %>
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.add()">
+                    <i class="fa fa-plus"></i> 添加
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.edit()">
+                    <i class="fa fa-edit"></i> 修改
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+                <a class="btn btn-warning" onclick="$.table.exportExcel()">
+                    <i class="fa fa-download"></i> 导出
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+<% for(var i = 0; i < columns.length; i++){ %>
+    <% if (columns[i].dictName != '') { %> 
+        var <%= columns[i].changeColumnName %>Datas = [[${@dict.getType('<%= columns[i].dictName %>')}]];
+    <% } %>
+<% } %>
+        var prefix = ctx + "<%= simpleName %>";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "<%= simpleName %>",
+                columns: [{
+                    checkbox: true
+                },
+                
+<% for(var i = 0; i < columns.length; i++){ %>
+ <% if (columns[i].columnKey == 'PRI') { %> 
+                {
+                    field: '<%= columns[i].changeColumnName %>',
+                    title: '<%= columns[i].remark %>',
+                    visible: false
+                }
+ <% } else if(columns[i].columnShow && columns[i].dictName != '') {%>
+                {
+                    field: '<%= columns[i].changeColumnName %>',
+                    title: '<%= columns[i].remark %>',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(<%= columns[i].changeColumnName %>Datas, value);
+                    }
+                },
+ <% } else if(columns[i].columnShow && columns[i].dictName != '') {%>
+                {
+                    field: '<%= columns[i].changeColumnName %>',
+                    title: '<%= columns[i].remark %>',
+                },
+<% } %><% } %>
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.<%= pkChangeColName %> + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.<%= pkChangeColName %> + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

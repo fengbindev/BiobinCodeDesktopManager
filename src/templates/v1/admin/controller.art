@@ -1,0 +1,120 @@
+package <%= _package %>.controller;
+
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import <%= _package %>.domain.<%= className %>;
+import <%= _package %>.framework.web.base.BaseController;
+import <%= _package %>.framework.web.pojo.swaggermodel.DataGridModel;
+import <%= _package %>.framework.web.pojo.swaggermodel.ResultModel;
+import com.biobin.field.framework.web.pojo.swaggermodel.SimpleResultModel;
+import <%= _package %>.service.I<%= className %>Service;
+import <%= _package %>.dto.<%= className %>PageReqDTO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import javax.validation.Valid;
+
+
+/**
+ * <p>
+ * <%= tableName %> 前端控制器
+ * </p>
+ *
+ * @author <%= author %>
+ * @since <%= date %>
+ */
+@Controller
+@RequestMapping("/<%= changeClassName %>")
+public class <%= className %>Controller extends BaseController {
+
+    @Autowired
+    private I<%= className %>Service <%= changeClassName %>Service;
+
+    @GetMapping
+    public String <%= changeClassName %>()  {
+        return prefix + "/<%= changeClassName %>";
+    }
+
+    @GetMapping("/list")
+    public TableDataInfo list(<%= className %> <%= changeClassName %>) {
+        startPage();
+        //dto.setOrgId(ShiroUtils.getCurrentOrgId());
+        //dto.setCropId(ShiroUtils.getCurrentCropId());
+        List<<%= className %>> list =   <%= changeClassName %>Service.list( Wrappers.<<%= className %>>lambdaQuery()
+        <% for(var i = 0; i < queryColumns.length; i++){ %>
+        <% if (queryColumns[i].queryType == '=') { %>
+            <% if (queryColumns[i].columnType == 'String') { %>
+            .eq(StrUtil.isNotEmpty(dto.get<%= queryColumns[i].capitalColumnName %>()), <%= className %>::get<%= queryColumns[i].capitalColumnName %>, dto.get<%= queryColumns[i].capitalColumnName %>())
+            <% } else {%>
+            .eq(ObjectUtil.isNull(dto.get<%= queryColumns[i].capitalColumnName %>()), <%= className %>::get<%= queryColumns[i].capitalColumnName %>, dto.get<%= queryColumns[i].capitalColumnName %>())
+            <% } %>
+        <% } %>
+        <% if (queryColumns[i].queryType == '!=') { %>
+            <% if (queryColumns[i].columnType == 'String') { %>
+            .ne(StrUtil.isNotEmpty(dto.get<%= queryColumns[i].capitalColumnName %>()), <%= className %>::get<%= queryColumns[i].capitalColumnName %>, dto.get<%= queryColumns[i].capitalColumnName %>())
+            <% } else {%>
+            .ne(ObjectUtil.isNull(dto.get<%= queryColumns[i].capitalColumnName %>()), <%= className %>::get<%= queryColumns[i].capitalColumnName %>, dto.get<%= queryColumns[i].capitalColumnName %>())
+            <% } %>        
+        <% } %>
+        <% if (queryColumns[i].queryType == '>=') { %>
+            <% if (queryColumns[i].columnType == 'String') { %>
+            .ge(StrUtil.isNotEmpty(dto.get<%= queryColumns[i].capitalColumnName %>()), <%= className %>::get<%= queryColumns[i].capitalColumnName %>, dto.get<%= queryColumns[i].capitalColumnName %>())
+            <% } else {%>
+            .ge(ObjectUtil.isNull(dto.get<%= queryColumns[i].capitalColumnName %>()), <%= className %>::get<%= queryColumns[i].capitalColumnName %>, dto.get<%= queryColumns[i].capitalColumnName %>())
+            <% } %>               
+        <% }  %>
+        <% if (queryColumns[i].queryType == '<=') { %>
+            <% if (queryColumns[i].columnType == 'String') { %>
+            .ge(StrUtil.isNotEmpty(dto.get<%= queryColumns[i].capitalColumnName %>()), <%= className %>::get<%= queryColumns[i].capitalColumnName %>, dto.get<%= queryColumns[i].capitalColumnName %>())
+            <% } else {%>
+            .ge(ObjectUtil.isNull(dto.get<%= queryColumns[i].capitalColumnName %>()), <%= className %>::get<%= queryColumns[i].capitalColumnName %>, dto.get<%= queryColumns[i].capitalColumnName %>())
+            <% } %>         
+        <% } %>
+        <% if (queryColumns[i].queryType == 'Like') { %>
+            <% if (queryColumns[i].columnType == 'String') { %>
+            .like(StrUtil.isNotEmpty(dto.get<%= queryColumns[i].capitalColumnName %>()), <%= className %>::get<%= queryColumns[i].capitalColumnName %>, dto.get<%= queryColumns[i].capitalColumnName %>())
+            <% } else {%>
+            .like(ObjectUtil.isNull(dto.get<%= queryColumns[i].capitalColumnName %>()), <%= className %>::get<%= queryColumns[i].capitalColumnName %>, dto.get<%= queryColumns[i].capitalColumnName %>())
+            <% } %>     
+        <% } %>
+        <% if (queryColumns[i].queryType == 'NotNull') { %>
+            <% if (queryColumns[i].columnType == 'String') { %>
+            .notNull(StrUtil.isNotEmpty(dto.get<%= queryColumns[i].capitalColumnName %>()), <%= className %>::get<%= queryColumns[i].capitalColumnName %>, dto.get<%= queryColumns[i].capitalColumnName %>())
+            <% } else {%>
+            .notNull(ObjectUtil.isNull(dto.get<%= queryColumns[i].capitalColumnName %>()), <%= className %>::get<%= queryColumns[i].capitalColumnName %>, dto.get<%= queryColumns[i].capitalColumnName %>())
+            <% } %>
+        <% } %>
+        <% } %>
+        );
+        return getDataTable(list);
+    }
+
+    @GetMapping("/add")
+    public String add(){
+        return prefix + "/add";
+    }
+
+    @PostMapping("/add")
+    @ResponseBody
+    public AjaxResult create<%= className %>(@Valid <%= className %> <%= changeClassName %>) {
+        return toAjax( <%= changeClassName %>Service.save(<%= changeClassName %>));
+    }
+
+    @GetMapping("/edit/{<%= pkChangeColName %>}")
+    public String edit(@PathVariable("<%= pkChangeColName %>") <%= pkColumnType %> <%= pkChangeColName %>, ModelMap mmap) {
+        <%= className %> <%= changeClassName %> = <%= changeClassName %>Service.getById(<%= pkChangeColName %>);
+        mmap.put("<%= changeClassName %>", <%= changeClassName %>);
+        return prefix + "/edit";
+    }
+
+    @PostMapping("/edit")
+    @ResponseBody
+    public AjaxResult update$<%= className %>(@Valid <%= className %> <%= changeClassName %>) {
+        return toAjax(<%= changeClassName %>Service.updateById(<%= changeClassName %>));
+    }
+
+    @PostMapping("/remove")
+   @ResponseBody
+    public AjaxResult remove(String ids) {
+        return toAjax(<%= changeClassName %>Service.removeByIds(StrUtil.splitTrim(ids, ",")));
+    }
+
+}

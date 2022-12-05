@@ -1,6 +1,16 @@
 let _ = require('lodash');
 // import template from 'art-template/lib/template-web.js'
-import {
+import { 
+    frontListTemplateV1,
+    frontAddTemplateV1,
+    adminDomainTemplateV1,
+    adminMapperTemplateV1,
+    adminMapperXmlTemplateV1,
+    adminServiceTemplateV1,
+    adminServiceImpTemplateV1,
+    adminControllerTemplateV1
+} from '@/templates/v1/index.js'
+import { 
     frontIndexTemplateV2, 
     frontSaveTemplateV2, 
     adminDomainTemplateV2, 
@@ -44,6 +54,19 @@ export default {
         let localTemplateList = JSON.parse(localStorage.getItem("templateList") || "[]")
         if (localTemplateList.length == 0) {
             let templates = [
+                {
+                    "templateName":"百奥云V1模板",
+                    "codeTemplateList":[
+                        {"codeTemplateName":"list.html","fileType":"html","content": frontListTemplateV1},
+                        {"codeTemplateName":"add.html","fileType":"html","content": frontAddTemplateV1},
+                        {"codeTemplateName":"domain.java","fileType":"java","content": adminDomainTemplateV1},
+                        {"codeTemplateName":"mapper.java","fileType":"java","content": adminMapperTemplateV1},
+                        {"codeTemplateName":"mapperXml.xml","fileType":"xml","content": adminMapperXmlTemplateV1},
+                        {"codeTemplateName":"service.java","fileType":"java","content": adminServiceTemplateV1},
+                        {"codeTemplateName":"serviceImp.java","fileType":"java","content": adminServiceImpTemplateV1},
+                        {"codeTemplateName":"controller.java","fileType":"java","content": adminControllerTemplateV1},
+                    ]
+                },
                 {   
                     "templateName":"百奥云V2模板",
                     "codeTemplateList":
@@ -133,7 +156,6 @@ export default {
         // 表名
         data.tableName=config.tableName
         data.simpleName=config.tableName
-        data.org=config.tableName
         // 大写开头的类名
         var className = _.upperFirst(_.camelCase(config.tableName));
         // 小写开头的类名
@@ -226,6 +248,8 @@ export default {
              item.changeColumnName = changeColumnName
              //大写开头的字段名称
              item.capitalColumnName = capitalColumnName
+             // 关联字典
+             item.dictName = columnInfos[i].dictName || ""
             // 添加非空字段信息
             if (columnInfos[i].notNull) {
                 data.isNotNullColumns.push(item);
@@ -235,7 +259,7 @@ export default {
                 // 查询类型
                 item.queryType = columnInfos[i].queryType
                 // 是否存在查询
-                data.asQuery = true
+                data.hasQuery = true
                 // 查询中存储 Timestamp 类型
                 if ("Timestamp" == colType) {
                     data.queryHasTimestamp = true
