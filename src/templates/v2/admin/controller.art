@@ -42,6 +42,8 @@ public class <%= className %>Controller extends BaseController {
     @ApiOperation("新增<%= apiAlias %>")
     @PostMapping
     public SimpleResultModel create<%= className %>(@Valid @RequestBody <%= className %> <%= changeClassName %>) {
+        <% if (orgFlag == 'true') { %><%= changeClassName %>.setOrgId(ShiroUtils.getCurrentOrgId());<% } %>
+        <% if (cropFlag == 'true') { %><%= changeClassName %>.setCropId(ShiroUtils.getCurrentCropId());<% } %>
         <%= changeClassName %>Service.save(<%= changeClassName %>);
         return SimpleResultModel.success();
     }

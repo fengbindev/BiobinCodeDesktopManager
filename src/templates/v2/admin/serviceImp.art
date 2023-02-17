@@ -25,8 +25,6 @@ public class <%= className %>ServiceImpl extends ServiceImpl<<%= className %>Map
 
     @Override
     public DataGridModel<<%= className %>> pageList(<%= className %>PageReqDTO dto) {
-        //dto.setOrgId(ShiroUtils.getCurrentOrgId());
-        //dto.setCropId(ShiroUtils.getCurrentCropId());
         IPage<<%= className %>> page = new Query<<%= className %>>().getPage(dto);
         page = this.page(page, Wrappers.<<%= className %>>lambdaQuery()
         <% for(var i = 0; i < queryColumns.length; i++){ %>
@@ -73,6 +71,8 @@ public class <%= className %>ServiceImpl extends ServiceImpl<<%= className %>Map
             <% } %>
         <% } %>
         <% } %>
+           <% if (orgFlag == 'true') { %>.eq( <%= className %>::getOrgId, ShiroUtils.getCurrentOrgId()))<% } %>
+            <% if (cropFlag == 'true') { %>.eq( <%= className %>::getCropId, ShiroUtils.getCurrentCropId()))<% } %>
         );
         DataGridModel<<%= className %>> dataGridModel = new DataGridModel<>();
         dataGridModel.setCurrentPage(dto.getPageNum());

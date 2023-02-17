@@ -144,7 +144,7 @@
                   </el-select>
                 </template>
               </el-table-column>
-              <el-table-column :label="$t('message.date_anao')">
+              <!-- <el-table-column :label="$t('message.date_anao')">
                 <template slot-scope="scope">
                   <el-select v-model="data[scope.$index].dateAnnotation" filterable class="edit-input" clearable size="mini" :placeholder="$t('message.gen_placeholder')">
                     <el-option
@@ -157,12 +157,10 @@
                     />
                   </el-select>
                 </template>
-              </el-table-column>
+              </el-table-column> -->
               <el-table-column :label="$t('message.dict_sel')">
                 <template slot-scope="scope">
-                  <el-select v-model="data[scope.$index].dictName" filterable class="edit-input" clearable size="mini" :placeholder="$t('message.gen_placeholder')">
-                    <el-option v-for="item in dicts" :key="item.id" :label="item.remark === '' ? item.name : item.remark" :value="item.name" />
-                  </el-select>
+                  <el-input v-model="data[scope.$index].dictName" size="mini" class="edit-input" :placeholder="$t('message.gen_placeholder')"/>
                 </template>
               </el-table-column>
             </el-table>
@@ -183,6 +181,32 @@
             >{{$t('message.btn_save')}}</el-button>
           </div>
           <el-form ref="form" :model="form" :rules="rules" size="small" label-width="120px">
+            <el-row>
+              <el-col :md="8" :xl="4">
+                <el-form-item label="关联机构" prop="orgFlag">
+                  <el-radio-group v-model="form.orgFlag" size="mini" style="width: 100%">
+                    <el-radio-button label="true">是</el-radio-button>
+                    <el-radio-button label="false">否</el-radio-button>
+                  </el-radio-group>
+                </el-form-item>
+              </el-col>
+              <el-col :md="8" :xl="4">
+                <el-form-item label="关联作物" prop="cropFlag">
+                  <el-radio-group v-model="form.cropFlag" size="mini">
+                    <el-radio-button label="true">是</el-radio-button>
+                    <el-radio-button label="false">否</el-radio-button>
+                  </el-radio-group>
+                </el-form-item>
+              </el-col>
+              <el-col :md="8" :xl="4">
+                <el-form-item label="高级搜索" prop="adSearch">
+                  <el-radio-group v-model="form.adSearch" size="mini">
+                    <el-radio-button label="true">是</el-radio-button>
+                    <el-radio-button label="false">否</el-radio-button>
+                  </el-radio-group>
+                </el-form-item>
+              </el-col>
+            </el-row>
             <el-form-item :label="$t('message.gen_author')" prop="author">
               <el-input v-model="form.author" style="width: 40%" />
               <span style="color: #C0C0C0;margin-left: 10px;">{{$t('message.gen_author_info')}}</span>
@@ -222,6 +246,8 @@
 </template>
 
 <script>
+// 不需要在表单得固定字段列表
+const fixclounms = ["org_id", "crop_id", "del_flag", "create_by", "create_time", "update_by", "update_time"];
 import db from '@/db.js'
 import generator from '@/generator.js'
 import GenPreview from './GenPreview.vue'
@@ -246,9 +272,10 @@ export default {
   props: ['client','database','tableName'],
   data() {
     return {
+      fixclounms: fixclounms,
       activeName: 'first', tableHeight: 550, loading: false, columnLoading: false, configLoading: false, dicts: [], syncLoading: false, genLoading: false,previewDialogVisible: false,
       data: [],
-      form: { tableName: '', author: '', pack: '', path: '', moduleName: '', cover: 'false', apiPath: '', prefix: '', apiAlias: null },
+      form: { tableName: '', author: '', pack: '', path: '', moduleName: '', cover: 'false', apiPath: '', prefix: '', apiAlias: null, orgFlag: true, cropFlag: true, adSearch: true },
       previewData: [],
       codeTemplateList: generator.getTemplateList()
     }
@@ -256,6 +283,12 @@ export default {
   computed: {
     rules() {
        const rules = {
+        orgFlag: [
+           { required: true, message: this.$t('message.gen_placeholder'), trigger: 'blur' }
+        ],
+        cropFlag: [
+           { required: true, message: this.$t('message.gen_placeholder'), trigger: 'blur' }
+        ],
         author: [
           { required: true, message: this.$t('message.gen_author_info2'), trigger: 'blur' }
         ],
@@ -331,7 +364,7 @@ export default {
           notNull: clist[i].isNullable == 'NO' ? true : false,
           remark: clist[i].columnComment,
           listShow: true,
-          formShow: true
+          formShow: fixclounms.indexOf(clist[i].columnName) == -1
         })
       }
       return columns

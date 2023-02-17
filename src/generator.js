@@ -143,6 +143,12 @@ export default {
      */
     getGenData(columnInfos, config) {
         let data = {}
+        // 关联机构
+        data.orgFlag = config.orgFlag
+        // 关联作物
+        data.cropFlag = config.cropFlag
+        // 高级搜索
+        data.adSearch = config.adSearch
         // 接口别名
         data.apiAlias = config.apiAlias;
         // 包名称
@@ -202,7 +208,6 @@ export default {
             item.columnKey = columnInfos[i].keyType
             // 主键类型
             var colType = this.converJavaField(columnInfos[i].columnType)
-            console.log('colType', colType)
             // 小写开头的字段名
             var changeColumnName = _.camelCase(columnInfos[i].columnName);
             // 大写开头的字段名

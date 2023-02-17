@@ -36,8 +36,6 @@ public class <%= className %>Controller extends BaseController {
     @GetMapping("/list")
     public TableDataInfo list(<%= className %> <%= changeClassName %>) {
         startPage();
-        //dto.setOrgId(ShiroUtils.getCurrentOrgId());
-        //dto.setCropId(ShiroUtils.getCurrentCropId());
         List<<%= className %>> list =   <%= changeClassName %>Service.list( Wrappers.<<%= className %>>lambdaQuery()
         <% for(var i = 0; i < queryColumns.length; i++){ %>
         <% if (queryColumns[i].queryType == '=') { %>
@@ -83,6 +81,8 @@ public class <%= className %>Controller extends BaseController {
             <% } %>
         <% } %>
         <% } %>
+        <% if (orgFlag == 'true') { %>.eq( <%= className %>::getOrgId, ShiroUtils.getCurrentOrgId()))<% } %>
+        <% if (cropFlag == 'true') { %>.eq( <%= className %>::getCropId, ShiroUtils.getCurrentCropId()))<% } %>
         );
         return getDataTable(list);
     }
@@ -95,6 +95,8 @@ public class <%= className %>Controller extends BaseController {
     @PostMapping("/add")
     @ResponseBody
     public AjaxResult create<%= className %>(@Valid <%= className %> <%= changeClassName %>) {
+        <% if (orgFlag == 'true') { %><%= changeClassName %>.setOrgId(ShiroUtils.getCurrentOrgId());<% } %>
+        <% if (cropFlag == 'true') { %><%= changeClassName %>.setCropId(ShiroUtils.getCurrentCropId());<% } %>
         return toAjax( <%= changeClassName %>Service.save(<%= changeClassName %>));
     }
 

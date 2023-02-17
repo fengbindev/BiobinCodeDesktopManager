@@ -9,23 +9,91 @@
 
 <template>
 	<el-container>
+		<% if (adSearch == 'true') { %>
+		<el-header class="header-table-search">
+			<el-form :model="form" ref="formRef">
+				<el-row :gutter="20">
+				<% if (hasQuery) { %>
+					<% for(var i = 0; i < queryColumns.length; i++){ %>
+					<el-col :xl="4" :lg="6" <% if (i>=2) { %>v-if="expand"<% } %>>
+						<el-form-item prop="<%= queryColumns[i].changeColumnName %>" label="<%= queryColumns[i].remark %>">
+							<% if (queryColumns[i].formType == 'Input') { %> 
+							<el-input v-model="form.<%= queryColumns[i].changeColumnName %>" :placeholder="$t('common.input_placeholder')" style="width:100%"/>
+							<% } else if (queryColumns[i].formType == 'Textarea') { %>
+							<el-input v-model="form.<%= queryColumns[i].changeColumnName %>" :placeholder="$t('common.input_placeholder')" style="width:100%"/>
+							<% } else if (queryColumns[i].formType == 'Radio') { %>
+								<% if (queryColumns[i].dictName != '') { %> 
+							<b-select v-model="form.<%= queryColumns[i].changeColumnName %>" :api-obj="dictListApi" :params="<%= queryColumns[i].dictName %>Params" clearable style="width:100%" :placeholder="$t('common.select_placeholder')"></b-select>
+								<% } else  {%>
+							<el-input v-model="form.<%= queryColumns[i].changeColumnName %>" :placeholder="$t('common.input_placeholder')" style="width:100%"/>
+								<% } %>
+							<% } else if (columns[i].formType == 'Select') { %>
+								<% if (queryColumns[i].dictName != '') { %> 
+							<b-select v-model="form.<%= queryColumns[i].changeColumnName %>" :api-obj="dictListApi" :params="<%= queryColumns[i].dictName %>Params" clearable style="width:100%" :placeholder="$t('common.select_placeholder')"></b-select>
+								<% } else  {%>
+							<el-input v-model="form.<%= queryColumns[i].changeColumnName %>" :placeholder="$t('common.input_placeholder')" style="width:100%"/>
+								<% } %>
+							<% } else if (columns[i].formType == 'Date' && columns[i].queryType != 'BetWeen') { %>
+							<el-date-picker
+								style="width:100%"
+								type="date"
+								value-format="YYYY-MM-DD"
+								v-model="form.<%= queryColumns[i].changeColumnName %>"
+								:placeholder="$t('common.select_placeholder')"
+							/>
+							<% } %>
+						</el-form-item>
+					</el-col>
+					<% } %>
+					<% for(var i = 0; i < betweens.length; i++){ %>
+					<el-col :xl="4" :lg="6">
+					<el-date-picker
+						style="width:100%"
+						type="daterange"
+						value-format="YYYY-MM-DD"
+						v-model="form.<%= queryColumns[i].changeColumnName %>"
+						:placeholder="$t('common.select_placeholder')"
+					/>
+					</el-col>
+					<% } %>
+				<% } %>
+					<div style="width:330px;padding-left:10px">
+						<el-form-item>
+							<el-button icon="el-icon-search" type="primary" @click="handleSearch">搜索</el-button>
+							<el-button icon="el-icon-refresh" @click="handleReset">重置</el-button>
+							<el-button text @click="expand=!expand">{{ !expand ? '展开' : '收起' }} 
+								<el-icon v-if="expand" class="m-l-xs"><el-icon-arrow-up /></el-icon>
+								<el-icon v-else class="m-l-xs"><el-icon-arrow-down /></el-icon>
+							</el-button>
+						</el-form-item>
+					</div>
+				</el-row>
+			</el-form>
+		</el-header>
+		<% } %>
+		<% if (adSearch == 'false') { %>
 		<el-header>
 			<div class="left-panel">
 				<el-button type="primary" icon="el-icon-plus" @click="add"></el-button>
 				<el-button type="danger" plain icon="el-icon-delete" :disabled="selection.length==0" @click="batch_del"></el-button>
 			</div>
+			<% if (adSearch == 'false') { %>
 			<div class="right-panel">
 				<div class="right-panel-search">
 					<el-input v-model="search.keyword" placeholder="关键词搜索" clearable></el-input>
-					<el-button type="primary" icon="el-icon-search" @click="upsearch"></el-button>
+					<el-button type="primary" icon="el-icon-search" @click="$refs.table.upData(this.search)"></el-button>
 				</div>
 			</div>
+			<% } %>
 		</el-header>
+		<% } %>
 		<el-main class="nopadding">
 			<bTable ref="table" :apiObj="apiObj" row-key="<%= pkChangeColName %>" @selection-change="selectionChange">
 				<el-table-column type="selection" width="50"></el-table-column>
 				<% for(var i = 0; i < columns.length; i++){ %>
+				<% if (columns[i].columnShow) { %>
 				<el-table-column label="<% if (columns[i].remark != '') { %><%= columns[i].remark %><% } else { %><%= columns[i].changeColumnName %><% } %>" prop="<%= columns[i].changeColumnName %>"></el-table-column>
+				<% } %>
 				<% } %>
 				<el-table-column label="操作" fixed="right" align="right" width="140">
 					<template #default="scope">
@@ -40,14 +108,15 @@
 				</el-table-column>
 			</bTable>
 		</el-main>
-		<el-dialog :title="titleMap[saveMode]" v-model="saveDialogVisible" :width="500" destroy-on-close>
-			<save-dialog ref="saveDialog" :mode="saveMode"></save-dialog>
-			<template #footer>
-				<el-button @click="saveDialogVisible=false" >取 消</el-button>
-				<el-button v-if="saveMode!='show'" type="primary" @click="saveForm()" :loading="isSaveing">保 存</el-button>
-			</template>
-		</el-dialog>
 	</el-container>
+
+	<el-dialog :title="titleMap[saveMode]" v-model="saveDialogVisible" :width="500" destroy-on-close>
+		<save-dialog ref="saveDialog" :mode="saveMode"></save-dialog>
+		<template #footer>
+			<el-button @click="saveDialogVisible=false" >取 消</el-button>
+			<el-button v-if="saveMode!='show'" type="primary" @click="saveForm()" :loading="isSaveing">保 存</el-button>
+		</template>
+	</el-dialog>
 </template>
 
 <script>
@@ -59,6 +128,8 @@
 		},
 		data() {
 			return {
+				<% if (adSearch) { %>expand: false,<% } %>
+				dictListApi: this.$API.<%= changeClassName %>.dictList,
 				apiObj: this.$API.<%= changeClassName %>.page,
 				selection: [],
 				search: {
@@ -72,12 +143,21 @@
 					show: "查看"
 				},
 				isSaveing: false,
+				form: { <% for(var i = 0; i < queryColumns.length; i++){ %><%= queryColumns[i].changeColumnName %>,<% } %> },
+				<% for(var i = 0; i < queryColumns.length; i++){ %><% if (queryColumns[i].dictName != '') { %> <%= queryColumns[i].dictName %>Params: {dictType: '<%= queryColumns[i].dictName %>'},<% } %><% } %>
 			}
 		},
 		mounted(){
 
 		},
 		methods: {
+			handleSearch() {
+				this.$refs.table.upData(this.form)
+			},
+			handleReset() {
+				this.$refs.formRef.resetFields();
+				this.$refs.table.upData(this.form)
+			},
 			//添加
 			add(){
 				this.saveMode = 'add';
@@ -151,10 +231,6 @@
 			selectionChange(selection){
 				this.selection = selection;
 			},
-			//搜索
-			upsearch(){
-
-			}
 		}
 	}
 </script>

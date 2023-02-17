@@ -131,7 +131,7 @@
                        return $.table.selectDictLabel(<%= columns[i].changeColumnName %>Datas, value);
                     }
                 },
- <% } else if(columns[i].columnShow && columns[i].dictName != '') {%>
+ <% } else if(columns[i].columnShow) {%>
                 {
                     field: '<%= columns[i].changeColumnName %>',
                     title: '<%= columns[i].remark %>',
